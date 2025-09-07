@@ -2,6 +2,14 @@ import subprocess
 
 import typer
 
+from osler.config import (
+    SUPPORTED_DATASETS,
+    get_dataset_config,
+    get_dataset_raw_files_path,
+    get_default_database_path,
+    logger,
+)
+
 app = typer.Typer(
     name="osler",
     help="osler CLI: Initialize Tuva Health Demo in DuckDB",
