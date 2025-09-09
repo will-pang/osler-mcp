@@ -48,6 +48,10 @@ def dataset_init_cmd(
             err=True,
         )
         raise typer.Exit(code=1)
+    
+@app.command("config")
+def config_cmd():
+    pass
 
 if __name__ == "__main__":
     app()
