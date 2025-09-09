@@ -15,7 +15,7 @@ logger = logging.getLogger(APP_NAME)
 # -------------------------------------------------------------------
 # Data directory rooted at project root (two levels up from this file)
 # -------------------------------------------------------------------
-def _get_project_root() -> Path:
+def get_project_root() -> Path:
     """
     Determine project root:
     - If cloned repo: use repository root (two levels up from this file)
@@ -31,7 +31,7 @@ def _get_project_root() -> Path:
     return Path.home()
 
 
-_PROJECT_ROOT = _get_project_root()
+_PROJECT_ROOT = get_project_root()
 _PROJECT_DATA_DIR = _PROJECT_ROOT / "osler_data"
 
 DEFAULT_DATABASES_DIR = _PROJECT_DATA_DIR / "databases"
@@ -39,8 +39,8 @@ DEFAULT_DATABASES_DIR = _PROJECT_DATA_DIR / "databases"
 SUPPORTED_DATASETS = {
     "tuva-project-demo": {
         "default_db_filename": "tuva_project_demo.db",
-        "dbt-project": True,
-        "repo": "https://github.com/tuva-health/demo",
+        "dbt_project_name": "tuva-project-demo",
+        "github_repo": "https://github.com/tuva-health/demo",
     }
 }
 
