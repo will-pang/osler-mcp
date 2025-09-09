@@ -41,8 +41,7 @@ def run_dbt_command(cmd: list[str], cwd: str) -> None:
     """Run a dbt command and handle errors."""
     try:
         # dbt_profiles_directory = os.path.abspath(os.path.join(cwd, ".."))
-        env = {**os.environ, "DBT_PROFILES_DIR": str(_PROJECT_ROOT / "dbt_projects")}
-        result = subprocess.run(cmd, cwd=cwd, check=True, text=True, env=env)
+        result = subprocess.run(cmd, cwd=cwd, check=True, text=True)
         typer.echo(result.stdout)
         typer.echo(f"✅ dbt {cmd[1:]} completed successfully")
         return result
