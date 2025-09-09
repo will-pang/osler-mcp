@@ -40,8 +40,7 @@ def _clone_dbt_project(github_repo: str, dbt_project_name: str) -> str:
 def run_dbt_command(cmd: list[str], cwd: str) -> None:
     """Run a dbt command and handle errors."""
     try:
-        cmd_plus_profiles = cmd + ['--profiles-dir', '../', '--profile', 'tuva_project_demo_duckdb']
-        print(cmd_plus_profiles)
+        cmd_plus_profiles = cmd + ['--profiles-dir', '../']
         result = subprocess.run(cmd_plus_profiles, cwd=cwd, check=True, text=True)
         typer.echo(result.stdout)
         typer.echo(f"✅ dbt {cmd[1:]} completed successfully")
