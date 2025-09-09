@@ -2,14 +2,11 @@
 osler_data/metadata/*
 
 # DBT
-dbt_packages/
-target/
-dbt_modules/
-logs/
-.user.yml
+dbt_projects/*
+!dbt_projects/README.md
 
 # DuckDB 
-*.duckdb
+*.duckdb 
 *.duckdb.wal
 
 # Python cache files

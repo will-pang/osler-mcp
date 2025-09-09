@@ -11,6 +11,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(APP_NAME)
 
+
 # -------------------------------------------------------------------
 # Data directory rooted at project root (two levels up from this file)
 # -------------------------------------------------------------------
@@ -37,9 +38,12 @@ DEFAULT_DATABASES_DIR = _PROJECT_DATA_DIR / "databases"
 
 SUPPORTED_DATASETS = {
     "tuva-project-demo": {
-        "default_db_filename": "tuva_project_demo.db"
+        "default_db_filename": "tuva_project_demo.db",
+        "dbt-project": True,
+        "repo": "https://github.com/tuva-health/demo",
     }
 }
+
 
 # --------------------------------------------------
 # Helper functions
@@ -47,6 +51,7 @@ SUPPORTED_DATASETS = {
 def get_dataset_config(dataset_name: str) -> dict | None:
     """Retrieve the configuration for a given dataset (case-insensitive)."""
     return SUPPORTED_DATASETS.get(dataset_name.lower())
+
 
 def get_default_database_path(dataset_name: str) -> Path | None:
     """
