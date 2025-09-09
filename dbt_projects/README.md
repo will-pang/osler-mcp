@@ -2,4 +2,4 @@
 
 Currently Supports:
 
-- The Tuva Project's Demo Repo [[Github](https://github.com/tuva-health/demo)]
+- Tuva-Project-Demo [[Github](https://github.com/tuva-health/demo)]
