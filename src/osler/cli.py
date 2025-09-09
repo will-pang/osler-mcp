@@ -10,21 +10,21 @@ app = typer.Typer(
 )
 
 
-def run_dbt_command(cmd: list[str], cwd: str = "tuva-health-demo") -> None:
-    """Run a dbt command and handle errors."""
-    try:
-        result = subprocess.run(cmd, cwd=cwd, check=True, text=True)
-        typer.echo(result.stdout)
-        typer.echo(f"✅ dbt {cmd[1:]} completed successfully")
-        return result
-    except subprocess.CalledProcessError as e:
-        typer.echo(f"❌ {' '.join(cmd)} failed with exit code {e.returncode}")
-        if e.stderr:
-            typer.echo(e.stderr)
-        raise typer.Exit(1)
-    except FileNotFoundError:
-        typer.echo("❌ dbt command not found. Please ensure dbt is installed.")
-        raise typer.Exit(1)
+# def run_dbt_command(cmd: list[str], cwd: str = "tuva-health-demo") -> None:
+#     """Run a dbt command and handle errors."""
+#     try:
+#         result = subprocess.run(cmd, cwd=cwd, check=True, text=True)
+#         typer.echo(result.stdout)
+#         typer.echo(f"✅ dbt {cmd[1:]} completed successfully")
+#         return result
+#     except subprocess.CalledProcessError as e:
+#         typer.echo(f"❌ {' '.join(cmd)} failed with exit code {e.returncode}")
+#         if e.stderr:
+#             typer.echo(e.stderr)
+#         raise typer.Exit(1)
+#     except FileNotFoundError:
+#         typer.echo("❌ dbt command not found. Please ensure dbt is installed.")
+#         raise typer.Exit(1)
 
 
 @app.command()
