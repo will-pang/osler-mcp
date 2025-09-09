@@ -1,9 +1,11 @@
 # Osler
 osler_data/metadata/*
 
+# Git
+.gitmodules
+
 # DBT
-dbt_projects/*
-!dbt_projects/README.md
+dbt_projects/
 
 # DuckDB 
 *.duckdb 

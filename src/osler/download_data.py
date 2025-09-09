@@ -14,3 +14,4 @@ def _clone_dbt_project(gitUrl: str) -> None:
       ], cwd=_DBT_PROJECT_ROOT, check=True)
 
 
+_clone_dbt_project("https://github.com/tuva-health/demo")
