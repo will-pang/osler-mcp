@@ -5,12 +5,12 @@ import typer
 
 app = typer.Typer(
     name="osler",
-    help="osler CLI: Initialize Tuva Health Demo in DuckDB",
+    help="osler CLI: Initialize Project",
     add_completion=False,
     rich_markup_mode="markdown",
 )
 
-@app.command()
+@app.command("init")
 def init(project_name: str):
     initialize_dataset(project_name)
 
