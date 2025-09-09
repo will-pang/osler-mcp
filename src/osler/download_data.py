@@ -11,8 +11,13 @@ def _clone_dbt_project(gitUrl: str) -> None:
     subprocess.run([
       "git", "clone",
       gitUrl,
-      "tuva-health-demo"
+      "tuva-project-demo"
       ], cwd=_DBT_PROJECT_ROOT, check=True)
 
+def initialize_dataset(dataset_name: str):
+    dataset_config = get_dataset_config(dataset_name)
+    if not dataset_config:
+        logger.error(f"Configuration for dataset '{dataset_name}' not found.")
+        return False
 
 _clone_dbt_project("https://github.com/tuva-health/demo")
