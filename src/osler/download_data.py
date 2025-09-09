@@ -9,7 +9,7 @@ def _clone_dbt_project(gitUrl: str) -> None:
     _DBT_PROJECT_ROOT.mkdir(parents=True, exist_ok=True)
     
     subprocess.run([
-      "git", "submodule", "add",
+      "git", "clone",
       gitUrl
       ], cwd=_DBT_PROJECT_ROOT, check=True)
 

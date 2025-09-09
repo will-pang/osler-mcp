@@ -5,7 +5,8 @@ osler_data/metadata/*
 .gitmodules
 
 # DBT
-dbt_projects
+dbt_projects/*
+!dbt_projects/README.md
 
 # DuckDB 
 *.duckdb 
