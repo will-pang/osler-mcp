@@ -1,7 +1,7 @@
 import subprocess
-from src.osler.config import _get_project_root
+from config import _get_project_root
 
-_PROJECT_ROOT = _get_project_root
+_PROJECT_ROOT = _get_project_root()
 _DBT_PROJECT_ROOT = _PROJECT_ROOT/"dbt_projects"
 
 def _clone_dbt_project(gitUrl: str) -> None:
