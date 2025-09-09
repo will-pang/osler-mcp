@@ -7,6 +7,7 @@ osler_data/metadata/*
 # DBT
 dbt_projects/*
 !dbt_projects/README.md
+!dbt_projects/profiles.yml
 
 # DuckDB 
 *.duckdb 
