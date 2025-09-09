@@ -10,7 +10,8 @@ def _clone_dbt_project(gitUrl: str) -> None:
     
     subprocess.run([
       "git", "clone",
-      gitUrl
+      gitUrl,
+      "tuva-health-demo"
       ], cwd=_DBT_PROJECT_ROOT, check=True)
 
 
