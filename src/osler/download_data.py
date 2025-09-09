@@ -78,7 +78,4 @@ def initialize_dataset(dataset_name: str) -> bool:
     run_dbt_command(["dbt", "build"], dbt_project_path)
     run_dbt_command(["dbt", "docs", "generate"], dbt_project_path)
 
-    return False
-
-# TEST, delete 
-initialize_dataset("tuva-project-demo")
+    return True
