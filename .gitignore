@@ -1,15 +1,16 @@
 # Osler
 osler_data/metadata/*
 
+# Git
+.gitmodules
+
 # DBT
-dbt_packages/
-target/
-dbt_modules/
-logs/
-.user.yml
+dbt_projects/*
+!dbt_projects/README.md
+!dbt_projects/profiles.yml
 
 # DuckDB 
-*.duckdb
+*.duckdb 
 *.duckdb.wal
 
 # Python cache files

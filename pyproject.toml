@@ -24,7 +24,7 @@ osler = "osler.cli:app"
 
 [tool.pdm.version]
 source = "file"
-path = "src/__init__.py"
+path = "src/osler/__init__.py"
 
 [tool.ruff]
 line-length = 88

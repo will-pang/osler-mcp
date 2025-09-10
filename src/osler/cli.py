@@ -1,49 +1,57 @@
 import subprocess
 
+from typing import Annotated
+
 import typer
 
-from osler.config import (
-    SUPPORTED_DATASETS,
-    get_dataset_config,
-    get_dataset_raw_files_path,
-    get_default_database_path,
-    logger,
-)
+from osler.download_data import initialize_dataset
+from osler.config import SUPPORTED_DATASETS
+from osler import __version__
 
 app = typer.Typer(
     name="osler",
-    help="osler CLI: Initialize Tuva Health Demo in DuckDB",
+    help="osler CLI: Initialize Project",
     add_completion=False,
     rich_markup_mode="markdown",
 )
 
-
-def run_dbt_command(cmd: list[str], cwd: str = "tuva-health-demo") -> None:
-    """Run a dbt command and handle errors."""
-    try:
-        result = subprocess.run(cmd, cwd=cwd, check=True, text=True)
-        typer.echo(result.stdout)
-        typer.echo(f"✅ dbt {cmd[1:]} completed successfully")
-        return result
-    except subprocess.CalledProcessError as e:
-        typer.echo(f"❌ {' '.join(cmd)} failed with exit code {e.returncode}")
-        if e.stderr:
-            typer.echo(e.stderr)
-        raise typer.Exit(1)
-    except FileNotFoundError:
-        typer.echo("❌ dbt command not found. Please ensure dbt is installed.")
-        raise typer.Exit(1)
+def version_callback(value: bool):
+    if value:
+        typer.echo(f"Osler CLI Version: {__version__}")
+        raise typer.Exit()
 
 
-@app.command()
-def init(project_name):
-    """Run dbt build and store in DuckDB"""
-    typer.echo("Initializing DBT Build of Tuva-Health in DuckDB")
+@app.command("init")
+def dataset_init_cmd(
+    dataset_name: Annotated[
+        str,
+        typer.Argument(
+            help=(
+                "Dataset to initialize. Default: 'tuva-project-demo'. "
+                f"Supported: {', '.join(SUPPORTED_DATASETS.keys())}"
+            ),
+            metavar="DATASET_NAME",
+        ),
+    ] = "tuva-project-demo"
+):
+    dataset_key = dataset_name.lower()
+    print(f"Dataset key: {dataset_key}") 
+    initialization_successful = initialize_dataset(dataset_key)
 
-    run_dbt_command(["dbt", "deps"])
-    run_dbt_command(["dbt", "build"])
-    run_dbt_command(["dbt", "docs", "generate"])
-
+    if not initialization_successful:
+        typer.secho(
+            (
+                f"Dataset '{dataset_name}' initialization FAILED. "
+                "Please check logs for details."
+            ),
+            fg=typer.colors.RED,
+            err=True,
+        )
+        raise typer.Exit(code=1)
+    
+@app.command("config")
+def config_cmd():
+    pass
 
 if __name__ == "__main__":
     app()

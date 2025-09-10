@@ -1,0 +1,6 @@
+default:
+  outputs:
+    default:
+      type: duckdb
+      path: ../../osler_data/databases/tuva_project_demo.duckdb
+      database: tuva_project_demo

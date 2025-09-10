@@ -1,5 +1,7 @@
 import logging
 from pathlib import Path
+import shutil
+import os
 
 APP_NAME = "osler"
 
@@ -11,10 +13,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(APP_NAME)
 
+
 # -------------------------------------------------------------------
 # Data directory rooted at project root (two levels up from this file)
 # -------------------------------------------------------------------
-def _get_project_root() -> Path:
+def get_project_root() -> Path:
     """
     Determine project root:
     - If cloned repo: use repository root (two levels up from this file)
@@ -30,16 +33,19 @@ def _get_project_root() -> Path:
     return Path.home()
 
 
-_PROJECT_ROOT = _get_project_root()
+_PROJECT_ROOT = get_project_root()
 _PROJECT_DATA_DIR = _PROJECT_ROOT / "osler_data"
 
 DEFAULT_DATABASES_DIR = _PROJECT_DATA_DIR / "databases"
 
 SUPPORTED_DATASETS = {
     "tuva-project-demo": {
-        "default_db_filename": "tuva_project_demo.db"
+        "default_db_filename": "tuva_project_demo.db",
+        "dbt_project_name": "tuva-project-demo",
+        "github_repo": "https://github.com/tuva-health/demo",
     }
 }
+
 
 # --------------------------------------------------
 # Helper functions
@@ -48,11 +54,14 @@ def get_dataset_config(dataset_name: str) -> dict | None:
     """Retrieve the configuration for a given dataset (case-insensitive)."""
     return SUPPORTED_DATASETS.get(dataset_name.lower())
 
+
 def get_default_database_path(dataset_name: str) -> Path | None:
     """
     Return the default DuckDB path for a given dataset,
     under <project_root>/osler_data/databases/.
     """
+    if os.path.exists(DEFAULT_DATABASES_DIR):
+        shutil.rmtree(DEFAULT_DATABASES_DIR) 
     cfg = get_dataset_config(dataset_name)
     if cfg and "default_db_filename" in cfg:
         DEFAULT_DATABASES_DIR.mkdir(parents=True, exist_ok=True)
