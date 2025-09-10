@@ -1,4 +1,4 @@
-# Osler: The Tuva Project Demo + MCP
+# Osler: Health Care Knowledge Base + MCP
 
 [Sir William Osler](https://en.wikipedia.org/wiki/William_Osler)
 
@@ -36,7 +36,7 @@ uv sync
 
 ### 🗄️ Database Configuration
 
-1. **Download [tuva-health demo](https://github.com/tuva-health/demo) database into DuckDB**:
+1. **Download [tuva-health demo](https://github.com/tuva-health/demo) database (via DuckDB)**:
    ```bash
-   osler init
+   osler init tuva-project-demo
    ```
