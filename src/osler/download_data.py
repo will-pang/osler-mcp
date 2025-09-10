@@ -1,7 +1,7 @@
 import subprocess
 import typer
 import os
-from osler.config import get_project_root, get_dataset_config, logger
+from osler.config import get_project_root, get_dataset_config, get_default_database_path, logger
 import shutil
 
 _PROJECT_ROOT = get_project_root()
@@ -57,6 +57,7 @@ def run_dbt_command(cmd: list[str], cwd: str) -> None:
 ### End: DBT Utils
 
 def initialize_dataset(dataset_name: str) -> bool:
+    database_path = get_default_database_path(dataset_name)
     dataset_config = get_dataset_config(dataset_name)
     if not dataset_config:
         logger.error(f"Configuration for dataset '{dataset_name}' not found.")

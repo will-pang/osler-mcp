@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+import shutil
 
 APP_NAME = "osler"
 
@@ -58,6 +59,7 @@ def get_default_database_path(dataset_name: str) -> Path | None:
     Return the default DuckDB path for a given dataset,
     under <project_root>/osler_data/databases/.
     """
+    shutil.rmtree(DEFAULT_DATABASES_DIR) 
     cfg = get_dataset_config(dataset_name)
     if cfg and "default_db_filename" in cfg:
         DEFAULT_DATABASES_DIR.mkdir(parents=True, exist_ok=True)
