@@ -10,8 +10,8 @@ Assuming you have [UV](https://docs.astral.sh/uv/getting-started/installation/) 
 
 ```bash
 # Clone the repository
-git clone https://github.com/will-pang/tuva-demo-mcp
-cd tuva-demo-mcp
+git clone https://github.com/will-pang/osler-mcp
+cd osler-mcp
 ```
 
 **Step 2: Create `UV` Virtual Environment**
