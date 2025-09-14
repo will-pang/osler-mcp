@@ -44,7 +44,7 @@ DEFAULT_DATABASES_DIR = _PROJECT_DATA_DIR / "databases"
 
 SUPPORTED_DATASETS = {
     "tuva-project-demo": {
-        "default_db_filename": "tuva_project_demo.db",
+        "default_db_filename": "tuva_project_demo.duckdb",
         "dbt_project_name": "tuva-project-demo",
         "github_repo": "https://github.com/tuva-health/demo",
     }
@@ -76,3 +76,5 @@ def delete_default_database_path() -> None:
     '''Deletes default database path for initiating new projects'''
     if os.path.exists(DEFAULT_DATABASES_DIR):
         shutil.rmtree(DEFAULT_DATABASES_DIR) 
+    
+    return None
