@@ -37,11 +37,11 @@ def _clone_dbt_project(github_repo: str, dbt_project_name: str) -> str:
 
     return dbt_project_path
 
-def run_dbt_command(cmd: list[str], cwd: str) -> None:
+def run_dbt_command(cmd: list[str], cwd: str, dataset_name: str) -> None:
     """Run a dbt command and handle errors."""
     try:
-        cmd_plus_profiles = cmd + ['--profiles-dir', '../']
-        result = subprocess.run(cmd_plus_profiles, cwd=cwd, check=True, text=True)
+        add_profiles_specification_to_cmd = cmd + ['--profiles-dir', '../', '--profile', dataset_name]
+        result = subprocess.run(add_profiles_specification_to_cmd, cwd=cwd, check=True, text=True)
         logger.info(f"✅ dbt {cmd[1:]} completed successfully")
         return result
     except subprocess.CalledProcessError as e:
@@ -75,8 +75,8 @@ def initialize_dataset(dataset_name: str) -> bool:
         raise typer.Exit(code=1)
     
     logger.info(f"Starting initialization for dataset: {dataset_name}")
-    run_dbt_command(["dbt", "deps"], dbt_project_path)
-    run_dbt_command(["dbt", "build"], dbt_project_path)
-    run_dbt_command(["dbt", "docs", "generate"], dbt_project_path)
+    run_dbt_command(["dbt", "deps"], dbt_project_path, dataset_name)
+    run_dbt_command(["dbt", "build"], dbt_project_path, dataset_name)
+    run_dbt_command(["dbt", "docs", "generate"], dbt_project_path, dataset_name)
 
     return True
