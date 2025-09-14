@@ -15,6 +15,9 @@ import jwt
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from osler.config import logger
 
 
