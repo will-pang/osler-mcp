@@ -123,3 +123,17 @@ def _init_backend():
 
     # Initialize OAuth2 authentication
     init_oauth2()
+
+    _backend = os.getenv("OSLER_BACKEND", "duckdb")
+
+    if _backend == "duckdb":
+        _db_path = os.getenv("OSLER_DB_PATH")
+        if not _db_path:
+            # Use default database path
+            _db_path = get_default_database_path("tuva-project-demo")
+
+        # Ensure the database exists
+        if not Path(_db_path).exists():
+            raise FileNotFoundError(f"DuckDB database not found: {_db_path}")
+    
+_init_backend()
