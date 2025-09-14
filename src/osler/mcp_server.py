@@ -38,15 +38,12 @@ def _is_safe_query(sql_query: str, internal_tool: bool = False) -> tuple[bool, s
 
         # Allow SELECT and PRAGMA (PRAGMA is needed for schema exploration)
         if statement_type not in (
-            "SELECT",
-            "UNKNOWN",
-        ):  # PRAGMA shows as UNKNOWN in sqlparse
-            return False, "Only SELECT and PRAGMA queries allowed"
+            "SELECT"
+        ):  
+            return False, "Only SELECT queries allowed"
 
         # Check if it's a PRAGMA statement (these are safe for schema exploration)
         sql_upper = sql_query.strip().upper()
-        if sql_upper.startswith("PRAGMA"):
-            return True, "Safe PRAGMA statement"
 
         # For SELECT statements, block dangerous injection patterns
         if statement_type == "SELECT":
@@ -117,5 +114,4 @@ def _is_safe_query(sql_query: str, internal_tool: bool = False) -> tuple[bool, s
 
     except Exception as e:
         return False, f"Validation error: {e}"
-    
     

@@ -705,6 +705,12 @@ wheels = [
 ]
 
 [[package]]
+name = "jose"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/01/3d/832caa69cd0d3be2d608d8290be2221072669aa88e87690837f6b31c480f/jose-1.0.0.tar.gz", hash = "sha256:8436c3617cd94e1ba97828fbb1ce27c129f66c78fb855b4bb47e122b5f345fba", size = 9153, upload-time = "2015-11-13T10:52:21.506Z" }
+
+[[package]]
 name = "jsonschema"
 version = "4.25.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1389,6 +1395,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pyjwt"
+version = "2.10.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e7/46/bd74733ff231675599650d3e47f361794b22ef3e3770998dda30d3b63726/pyjwt-2.10.1.tar.gz", hash = "sha256:3cc5772eb20009233caf06e9d8a0577824723b44e6648ee0a2aedb6cf9381953", size = 87785, upload-time = "2024-11-28T03:43:29.933Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/61/ad/689f02752eeec26aed679477e80e632ef1b682313be70793d798c1d5fc8f/PyJWT-2.10.1-py3-none-any.whl", hash = "sha256:dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb", size = 22997, upload-time = "2024-11-28T03:43:27.893Z" },
+]
+
+[[package]]
 name = "pyparsing"
 version = "3.2.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1737,12 +1752,16 @@ wheels = [
 name = "tuva-demo-mcp"
 source = { editable = "." }
 dependencies = [
+    { name = "cryptography" },
     { name = "dbt-core" },
     { name = "dbt-duckdb" },
     { name = "fastmcp" },
+    { name = "httpx" },
+    { name = "jose" },
     { name = "matplotlib" },
     { name = "pandas" },
     { name = "pre-commit" },
+    { name = "pyjwt" },
     { name = "ruff" },
     { name = "sqlparse" },
     { name = "typer" },
@@ -1750,12 +1769,16 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "cryptography", specifier = ">=45.0.7" },
     { name = "dbt-core", specifier = ">=1.10.10" },
     { name = "dbt-duckdb", specifier = ">=1.9.4" },
     { name = "fastmcp", specifier = ">=2.12.3" },
+    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "jose", specifier = ">=1.0.0" },
     { name = "matplotlib", specifier = ">=3.10.6" },
     { name = "pandas", specifier = ">=2.3.2" },
     { name = "pre-commit", specifier = ">=4.3.0" },
+    { name = "pyjwt", specifier = ">=2.10.1" },
     { name = "ruff", specifier = ">=0.12.12" },
     { name = "sqlparse", specifier = ">=0.5.3" },
     { name = "typer", specifier = ">=0.17.3" },
