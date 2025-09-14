@@ -5,6 +5,9 @@ import pandas as pd
 import sqlparse
 from fastmcp import FastMCP
 
+from osler.auth import init_oauth2, require_oauth2
+from osler.config import get_default_database_path
+
 # Create FastMCP server instance
 mcp = FastMCP("m3")
 
@@ -42,7 +45,6 @@ def _is_safe_query(sql_query: str, internal_tool: bool = False) -> tuple[bool, s
         ):  
             return False, "Only SELECT queries allowed"
 
-        # Check if it's a PRAGMA statement (these are safe for schema exploration)
         sql_upper = sql_query.strip().upper()
 
         # For SELECT statements, block dangerous injection patterns
@@ -115,3 +117,9 @@ def _is_safe_query(sql_query: str, internal_tool: bool = False) -> tuple[bool, s
     except Exception as e:
         return False, f"Validation error: {e}"
     
+def _init_backend():
+    """Initialize the backend based on environment variables."""
+    global _backend, _db_path, _bq_client, _project_id
+
+    # Initialize OAuth2 authentication
+    init_oauth2()

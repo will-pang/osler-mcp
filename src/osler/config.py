@@ -64,8 +64,6 @@ def get_default_database_path(dataset_name: str) -> Path | None:
     Return the default DuckDB path for a given dataset,
     under <project_root>/osler_data/databases/.
     """
-    if os.path.exists(DEFAULT_DATABASES_DIR):
-        shutil.rmtree(DEFAULT_DATABASES_DIR) 
     cfg = get_dataset_config(dataset_name)
     if cfg and "default_db_filename" in cfg:
         DEFAULT_DATABASES_DIR.mkdir(parents=True, exist_ok=True)
@@ -73,3 +71,8 @@ def get_default_database_path(dataset_name: str) -> Path | None:
 
     logger.warning(f"Missing default_db_filename for dataset: {dataset_name}")
     return None
+
+def delete_default_database_path() -> None:
+    '''Deletes default database path for initiating new projects'''
+    if os.path.exists(DEFAULT_DATABASES_DIR):
+        shutil.rmtree(DEFAULT_DATABASES_DIR) 

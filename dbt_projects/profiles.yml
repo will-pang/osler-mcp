@@ -1,6 +1,13 @@
-default:
+tuva-project-demo:
   outputs:
     default:
       type: duckdb
       path: ../../osler_data/databases/tuva_project_demo.duckdb
       database: tuva_project_demo
+
+dataset_name:
+  outputs:
+    default:
+      type: <newdb>
+      path: <newpath>
+      database: <newdatabase>
