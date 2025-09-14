@@ -10,12 +10,16 @@ readme = "README.md"
 requires-python = ">=3.13"
 
 dependencies = [
+    "cryptography>=45.0.7",
     "dbt-core>=1.10.10",
     "dbt-duckdb>=1.9.4",
     "fastmcp>=2.12.3",
+    "httpx>=0.28.1",
+    "jose>=1.0.0",
     "matplotlib>=3.10.6",
     "pandas>=2.3.2",
     "pre-commit>=4.3.0",
+    "pyjwt>=2.10.1",
     "ruff>=0.12.12",
     "sqlparse>=0.5.3",
     "typer>=0.17.3",
