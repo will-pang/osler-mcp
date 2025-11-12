@@ -3,7 +3,7 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [project]
-name = "tuva-demo-mcp"
+name = "osler-mcp"
 dynamic = ["version"]
 description = "TBD!"
 readme = "README.md"
