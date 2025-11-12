@@ -43,3 +43,20 @@ uv sync
 ## Credits
 
 - [M3: MIMIC-IV + MCP + Models](https://github.com/rafiattrach/m3)
+
+### In Progress
+
+```
+{
+  "mcpServers": {
+    "osler": {
+      "command": "~/Desktop/osler-mcp/.venv/bin/osler-mcp",
+      "args": [],
+      "env": {
+        "OSLER_BACKEND": "duckdb"
+      },
+      "cwd": "~/Desktop/osler-mcp/.venv/bin/osler-mcp"
+    }
+  }
+}
+```
