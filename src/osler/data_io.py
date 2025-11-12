@@ -1,8 +1,14 @@
-import subprocess
-import typer
-import os
-from osler.config import get_project_root, get_dataset_config, get_default_database_path, logger
 import shutil
+import subprocess
+
+import typer
+
+from osler.config import (
+    get_dataset_config,
+    get_default_database_path,
+    get_project_root,
+    logger,
+)
 
 _PROJECT_ROOT = get_project_root()
 
@@ -11,7 +17,7 @@ def _download_dataset(dataset_config: dict) -> str:
     if dataset_config["dbt_project_name"]:
         dbt_project_path = _clone_dbt_project(dataset_config["github_repo"], dataset_config["dbt_project_name"])
         return dbt_project_path
-    
+
     return False
 
 ### Start: DBT Utils
@@ -20,10 +26,10 @@ _DBT_PROJECT_ROOT = _PROJECT_ROOT/"dbt_projects"
 def _clone_dbt_project(github_repo: str, dbt_project_name: str) -> str:
     """Clones DBT project into _DBT_PROJECT_ROOT"""
 
-    dbt_project_path = _DBT_PROJECT_ROOT / dbt_project_name 
-    
+    dbt_project_path = _DBT_PROJECT_ROOT / dbt_project_name
+
     if dbt_project_path.exists():
-        shutil.rmtree(dbt_project_path)      
+        shutil.rmtree(dbt_project_path)
 
     try:
         subprocess.run([
@@ -73,7 +79,7 @@ def initialize_dataset(dataset_name: str) -> bool:
             err=True,
         )
         raise typer.Exit(code=1)
-    
+
     logger.info(f"Starting initialization for dataset: {dataset_name}")
     run_dbt_command(["dbt", "deps"], dbt_project_path, dataset_name)
     run_dbt_command(["dbt", "build"], dbt_project_path, dataset_name)

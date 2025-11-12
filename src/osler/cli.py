@@ -1,12 +1,11 @@
-import subprocess
 
 from typing import Annotated
 
 import typer
 
-from osler.data_io import initialize_dataset
-from osler.config import SUPPORTED_DATASETS, delete_default_database_path
 from osler import __version__
+from osler.config import SUPPORTED_DATASETS, delete_default_database_path
+from osler.data_io import initialize_dataset
 
 app = typer.Typer(
     name="osler",
@@ -48,7 +47,7 @@ def dataset_init_cmd(
             err=True,
         )
         raise typer.Exit(code=1)
-    
+
 @app.command("config")
 def config_cmd():
     pass

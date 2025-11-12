@@ -1,11 +1,9 @@
 import os
 from pathlib import Path
 
-import pandas as pd
+import duckdb
 import sqlparse
 from fastmcp import FastMCP
-
-import duckdb
 
 from osler.config import get_default_database_path
 
@@ -43,7 +41,7 @@ def _is_safe_query(sql_query: str, internal_tool: bool = False) -> tuple[bool, s
         # Allow SELECT and PRAGMA (PRAGMA is needed for schema exploration)
         if statement_type not in (
             "SELECT"
-        ):  
+        ):
             return False, "Only SELECT queries allowed"
 
         sql_upper = sql_query.strip().upper()
@@ -117,7 +115,7 @@ def _is_safe_query(sql_query: str, internal_tool: bool = False) -> tuple[bool, s
 
     except Exception as e:
         return False, f"Validation error: {e}"
-    
+
 def _init_backend():
     """Initialize the backend based on environment variables."""
     global _backend, _db_path, _bq_client, _project_id
@@ -133,14 +131,14 @@ def _init_backend():
         # Ensure the database exists
         if not Path(_db_path).exists():
             raise FileNotFoundError(f"DuckDB database not found: {_db_path}")
-    
+
 _init_backend()
 
 def _get_backend_info() -> str:
     """Get current backend information for display in responses."""
     if _backend == "duckdb":
         return f"🔧 **Current Backend:** DuckDB (local database)\n📁 **Database Path:** {_db_path}\n"
-    
+
 # ==========================================
 # INTERNAL QUERY EXECUTION FUNCTIONS
 # ==========================================
@@ -171,7 +169,7 @@ def _execute_duckdb_query(sql_query: str) -> str:
     except Exception as e:
         # Re-raise the exception so the calling function can handle it with enhanced guidance
         raise e
-    
+
 def _execute_query_internal(sql_query: str) -> str:
     """Internal query execution function that handles backend routing."""
     # Security check
@@ -263,7 +261,7 @@ def _execute_query_internal(sql_query: str) -> str:
 3. Retry your query with correct names
 
 📚 **Current Backend:** {_backend} - table names and syntax are backend-specific"""
-    
+
 # ==========================================
 # MCP TOOLS - PUBLIC API
 # ==========================================
@@ -302,7 +300,7 @@ def get_database_schema() -> str:
                     result_lst.append(full_qualified_table_name)
 
         return f"{_get_backend_info()}\n📋 **Available Tables (query-ready names):**\n{'\n'.join(result_lst)}\n\n💡 **Copy-paste ready:** These table names can be used directly in your SQL queries!"
-    
+
 @mcp.tool()
 def get_table_info(table_name: str, show_sample: bool = True) -> str:
     """📋 Explore a specific table's structure and see sample data.
@@ -392,7 +390,7 @@ def get_average_cms_hcc_risk_score(patient_id: int | None = None, limit: int = 1
 
     # Try common ICU table names based on backend
     if _backend == "duckdb":
-        query = f"""
+        query = """
         select
             count(distinct person_id) as patient_count
             , avg(blended_risk_score) as average_blended_risk_score
@@ -437,7 +435,7 @@ def get_overall_readmission_rate(patient_id: int | None = None, limit: int = 10)
 
     # Try common ICU table names based on backend
     if _backend == "duckdb":
-        query = f"""
+        query = """
         select 
             (select count(*)
             from readmissions.readmission_summary

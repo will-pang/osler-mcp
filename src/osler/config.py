@@ -1,7 +1,7 @@
 import logging
-from pathlib import Path
-import shutil
 import os
+import shutil
+from pathlib import Path
 
 APP_NAME = "osler"
 
@@ -11,8 +11,8 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)-8s] %(name)s: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     handlers=[
-          logging.StreamHandler(),  
-          logging.FileHandler("osler.log")  
+          logging.StreamHandler(),
+          logging.FileHandler("osler.log")
       ]
 )
 logger = logging.getLogger(APP_NAME)
@@ -75,6 +75,6 @@ def get_default_database_path(dataset_name: str) -> Path | None:
 def delete_default_database_path() -> None:
     '''Deletes default database path for initiating new projects'''
     if os.path.exists(DEFAULT_DATABASES_DIR):
-        shutil.rmtree(DEFAULT_DATABASES_DIR) 
-    
+        shutil.rmtree(DEFAULT_DATABASES_DIR)
+
     return None
