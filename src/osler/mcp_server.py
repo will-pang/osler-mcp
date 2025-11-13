@@ -149,7 +149,7 @@ def _get_backend_info() -> str:
 def _execute_duckdb_query(sql_query: str) -> str:
     """Execute SQLite query - internal function."""
     try:
-        conn = duckdb.connect("osler_data/databases/tuva_project_demo.duckdb")
+        conn = duckdb.connect(get_default_database_path("tuva-project-demo"))
         try:
             df = conn.execute(sql_query).df()
 
@@ -270,7 +270,7 @@ def _execute_query_internal(sql_query: str) -> str:
 
 @mcp.tool()
 def get_database_schema() -> str:
-    """🔍 Discover what data is available in the MIMIC-IV database.
+    """🔍 Discover what data is available in the database.
 
     **When to use:** Start here when you need to understand what tables exist, or when someone asks about data that might be in multiple tables.
 
@@ -278,14 +278,13 @@ def get_database_schema() -> str:
 
     **Next steps after using this:**
     - If you see relevant tables, use `get_table_info(table_name)` to explore their structure
-    - Common tables: `patients` (demographics), `admissions` (hospital stays), `icustays` (ICU data), `labevents` (lab results)
 
     Returns:
         List of all available tables in the database with current backend info
     """
     if _backend == "duckdb":
         result_lst = []
-        conn = duckdb.connect("osler_data/databases/tuva_project_demo.duckdb")
+        conn = duckdb.connect(get_default_database_path("tuva-project-demo"))
         schemas = conn.execute("SELECT schema_name FROM information_schema.schemata").fetchall()
 
         for schema in schemas:
@@ -346,7 +345,7 @@ def get_table_info(table_name: str, show_sample: bool = True) -> str:
 
 @mcp.tool()
 def execute_duckdb_query(sql_query: str) -> str:
-    """🚀 Execute SQL queries to analyze MIMIC-IV data.
+    """🚀 Execute SQL queries to analyze data.
 
     **💡 Pro tip:** For best results, explore the database structure first!
 
@@ -356,7 +355,6 @@ def execute_duckdb_query(sql_query: str) -> str:
     3. **Write your SQL query:** Use exact table/column names from exploration
 
     **Why exploration helps:**
-    - Table names vary between backends (SQLite vs BigQuery)
     - Column names may be unexpected (e.g., age might be 'anchor_age')
     - Sample data shows actual formats and constraints
 
@@ -369,26 +367,16 @@ def execute_duckdb_query(sql_query: str) -> str:
     return _execute_query_internal(sql_query)
 
 @mcp.tool()
-def get_average_cms_hcc_risk_score(patient_id: int | None = None, limit: int = 10) -> str:
-    """🏥 Get ICU stay information and length of stay data.
+def get_average_cms_hcc_risk_score() -> str:
+    """Get Average CMS-HCC Risk Scores
 
-    **⚠️ Note:** This is a convenience function that assumes standard MIMIC-IV table structure.
-    **For reliable queries:** Use `get_database_schema()` → `get_table_info()` → `execute_mimic_query()` workflow.
-
-    **What you'll get:** Patient IDs, admission times, length of stay, and ICU details.
+    **For reliable queries:** Use `get_database_schema()` → `get_table_info()` → `execute_duckdb_query()` workflow.
 
     Args:
-        patient_id: Specific patient ID to query (optional)
-        limit: Maximum number of records to return (default: 10)
 
     Returns:
-        ICU stay data as formatted text or guidance if table not found
+        Average CMS-HCC Risk Scores
     """
-    # Security validation
-    if not _validate_limit(limit):
-        return "Error: Invalid limit. Must be a positive integer between 1 and 10000."
-
-    # Try common ICU table names based on backend
     if _backend == "duckdb":
         query = """
         select
@@ -407,33 +395,23 @@ def get_average_cms_hcc_risk_score(patient_id: int | None = None, limit: int = 1
 💡 **For reliable results, use the proper workflow:**
 1. `get_database_schema()` ← See actual table names
 2. `get_table_info('table_name')` ← Understand structure
-3. `execute_mimic_query('your_sql')` ← Use exact names
+3. `execute_duckdb_query('your_sql')` ← Use exact names
 
 This ensures compatibility across different MIMIC-IV setups."""
 
     return result
 
 @mcp.tool()
-def get_overall_readmission_rate(patient_id: int | None = None, limit: int = 10) -> str:
-    """🏥 Get ICU stay information and length of stay data.
+def get_overall_readmission_rate() -> str:
+    """🏥 Get overall readmission rate
 
-    **⚠️ Note:** This is a convenience function that assumes standard MIMIC-IV table structure.
-    **For reliable queries:** Use `get_database_schema()` → `get_table_info()` → `execute_mimic_query()` workflow.
-
-    **What you'll get:** Patient IDs, admission times, length of stay, and ICU details.
+    **For reliable queries:** Use `get_database_schema()` → `get_table_info()` → `execute_duckdb_query()` workflow.
 
     Args:
-        patient_id: Specific patient ID to query (optional)
-        limit: Maximum number of records to return (default: 10)
 
     Returns:
-        ICU stay data as formatted text or guidance if table not found
+        Overall readmission rate
     """
-    # Security validation
-    if not _validate_limit(limit):
-        return "Error: Invalid limit. Must be a positive integer between 1 and 10000."
-
-    # Try common ICU table names based on backend
     if _backend == "duckdb":
         query = """
         select 
@@ -454,9 +432,9 @@ def get_overall_readmission_rate(patient_id: int | None = None, limit: int = 10)
 💡 **For reliable results, use the proper workflow:**
 1. `get_database_schema()` ← See actual table names
 2. `get_table_info('table_name')` ← Understand structure
-3. `execute_mimic_query('your_sql')` ← Use exact names
+3. `execute_duckdb_query('your_sql')` ← Use exact names
 
-This ensures compatibility across different MIMIC-IV setups."""
+"""
 
     return result
 
@@ -464,7 +442,6 @@ def main():
     """Main entry point for MCP server."""
     # Run the FastMCP server
     mcp.run()
-
 
 if __name__ == "__main__":
     main()
