@@ -41,7 +41,7 @@ uv sync
    osler init tuva-project-demo
    ```
 
-2. Add custom MCP server to Cursor IDE:
+2. Add custom MCP server to [Cursor IDE](https://cursor.com/docs/context/mcp):
 
    ```
    {
