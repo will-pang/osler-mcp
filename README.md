@@ -36,27 +36,28 @@ uv sync
 #### [dbt projects Example](dbt_projects/README.md)
 
 1. **Download [tuva-health demo](https://github.com/tuva-health/demo) and build models into DuckDB database**:
+
    ```bash
    osler init tuva-project-demo
+   ```
+
+2. Add custom MCP server to Cursor IDE:
+
+   ```
+   {
+     "mcpServers": {
+       "osler": {
+         "command": "<PROJECT ROOT>/.venv/bin/osler-mcp",
+         "args": [],
+         "env": {
+           "OSLER_BACKEND": "duckdb"
+         },
+         "cwd": "<PROJECT ROOT>/.venv/bin/osler-mcp"
+       }
+     }
+   }
    ```
 
 ## Credits
 
 - [M3: MIMIC-IV + MCP + Models](https://github.com/rafiattrach/m3)
-
-### In Progress
-
-```
-{
-  "mcpServers": {
-    "osler": {
-      "command": "~/Desktop/osler-mcp/.venv/bin/osler-mcp",
-      "args": [],
-      "env": {
-        "OSLER_BACKEND": "duckdb"
-      },
-      "cwd": "~/Desktop/osler-mcp/.venv/bin/osler-mcp"
-    }
-  }
-}
-```
