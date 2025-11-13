@@ -27,6 +27,7 @@ dependencies = [
 
 [project.scripts]
 osler = "osler.cli:app"
+osler-mcp = "m3.mcp_server:main"
 
 [tool.pdm.version]
 source = "file"
