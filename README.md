@@ -47,12 +47,12 @@ uv sync
    {
      "mcpServers": {
        "osler": {
-         "command": "<PROJECT ROOT>/.venv/bin/osler-mcp",
+         "command": "<PROJECT_ROOT>/.venv/bin/osler-mcp",
          "args": [],
          "env": {
            "OSLER_BACKEND": "duckdb"
          },
-         "cwd": "<PROJECT ROOT>/.venv/bin/osler-mcp"
+         "cwd": "<PROJECT_ROOT>/.venv/bin/osler-mcp"
        }
      }
    }
@@ -61,3 +61,4 @@ uv sync
 ## Credits
 
 - [M3: MIMIC-IV + MCP + Models](https://github.com/rafiattrach/m3)
+- [The Tuva Project](https://github.com/tuva-health)
