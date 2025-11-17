@@ -6,19 +6,24 @@ import sqlparse
 from fastmcp import FastMCP
 
 from osler.config import get_default_database_path
+from osler.database_utils.duckdb_client import DuckDB
 
-# Create FastMCP server instance
+# ---------------------------------------------------------
+# Initialize backend
+# ---------------------------------------------------------
+_backend_name = os.getenv("OSLER_BACKEND", "duckdb")
+
+if _backend_name == "duckdb":
+    _db_path = os.getenv("OSLER_DB_PATH") or get_default_database_path("tuva-project-demo")
+    backend = DuckDB(_db_path)
+else:
+    raise ValueError(f"Unsupported backend: {_backend_name}")
+
 mcp = FastMCP("osler")
 
-# Global variables for backend configuration
-_backend = None
-_db_path = None
-_bq_client = None
-_project_id = None
-
-def _validate_limit(limit: int) -> bool:
-    """Validate limit parameter to prevent resource exhaustion."""
-    return isinstance(limit, int) and 0 < limit <= 1000
+# ---------------------------------------------------------
+# Security validation
+# ---------------------------------------------------------
 
 def _is_safe_query(sql_query: str, internal_tool: bool = False) -> tuple[bool, str]:
     """Secure SQL validation - blocks injection attacks, allows legitimate queries."""
@@ -116,59 +121,12 @@ def _is_safe_query(sql_query: str, internal_tool: bool = False) -> tuple[bool, s
     except Exception as e:
         return False, f"Validation error: {e}"
 
-def _init_backend():
-    """Initialize the backend based on environment variables."""
-    global _backend, _db_path, _bq_client, _project_id
-
-    _backend = os.getenv("OSLER_BACKEND", "duckdb")
-
-    if _backend == "duckdb":
-        _db_path = os.getenv("OSLER_DB_PATH")
-        if not _db_path:
-            # Use default database path
-            _db_path = get_default_database_path("tuva-project-demo")
-
-        # Ensure the database exists
-        if not Path(_db_path).exists():
-            raise FileNotFoundError(f"DuckDB database not found: {_db_path}")
-
-_init_backend()
-
-def _get_backend_info() -> str:
-    """Get current backend information for display in responses."""
-    if _backend == "duckdb":
-        return f"🔧 **Current Backend:** DuckDB (local database)\n📁 **Database Path:** {_db_path}\n"
-
 # ==========================================
 # INTERNAL QUERY EXECUTION FUNCTIONS
 # ==========================================
 # These functions perform the actual database operations
 # and are called by the MCP tools. This prevents MCP tools
 # from calling other MCP tools, which violates the MCP protocol.
-
-def _execute_duckdb_query(sql_query: str) -> str:
-    """Execute SQLite query - internal function."""
-    try:
-        conn = duckdb.connect(get_default_database_path("tuva-project-demo"))
-        try:
-            df = conn.execute(sql_query).df()
-
-            if df.empty:
-                return "No results found"
-
-            # Limit output size
-            if len(df) > 50:
-                result = df.head(50).to_string(index=False)
-                result += f"\n... ({len(df)} total rows, showing first 50)"
-            else:
-                result = df.to_string(index=False)
-
-            return result
-        finally:
-            conn.close()
-    except Exception as e:
-        # Re-raise the exception so the calling function can handle it with enhanced guidance
-        raise e
 
 def _execute_query_internal(sql_query: str) -> str:
     """Internal query execution function that handles backend routing."""
@@ -189,14 +147,10 @@ def _execute_query_internal(sql_query: str) -> str:
         return f"❌ **Security Error:** {message}\n\n💡 **Tip:** Only SELECT statements are allowed for data analysis."
 
     try:
-        if _backend == "duckdb":
-            return _execute_duckdb_query(sql_query)
-        else:  # bigquery
-            return _execute_duckdb_query(sql_query)
+        return backend.execute_query(sql_query)
     except Exception as e:
         error_msg = str(e).lower()
 
-        # Provide specific, actionable error guidance
         suggestions = []
 
         if "no such table" in error_msg or "table not found" in error_msg:
@@ -204,7 +158,7 @@ def _execute_query_internal(sql_query: str) -> str:
                 "🔍 **Table name issue:** Use `get_database_schema()` to see exact table names"
             )
             suggestions.append(
-                f"📋 **Backend-specific naming:** {_backend} has specific table naming conventions"
+                f"📋 **Backend-specific naming:** {_backend_name} has specific table naming conventions"
             )
             suggestions.append(
                 "💡 **Quick fix:** Check if the table name matches exactly (case-sensitive)"
@@ -226,7 +180,7 @@ def _execute_query_internal(sql_query: str) -> str:
                 "📝 **SQL syntax issue:** Check quotes, commas, and parentheses"
             )
             suggestions.append(
-                f"🎯 **Backend syntax:** Verify your SQL works with {_backend}"
+                f"🎯 **Backend syntax:** Verify your SQL works with {_backend_name}"
             )
             suggestions.append(
                 "💭 **Try simpler:** Start with `SELECT * FROM table_name LIMIT 5`"
@@ -260,7 +214,7 @@ def _execute_query_internal(sql_query: str) -> str:
 2. `get_table_info('your_table')` ← Check exact column names
 3. Retry your query with correct names
 
-📚 **Current Backend:** {_backend} - table names and syntax are backend-specific"""
+📚 **Current Backend:** {_backend_name} - table names and syntax are backend-specific"""
 
 # ==========================================
 # MCP TOOLS - PUBLIC API
@@ -270,81 +224,16 @@ def _execute_query_internal(sql_query: str) -> str:
 
 @mcp.tool()
 def get_database_schema() -> str:
-    """🔍 Discover what data is available in the database.
+    tables = backend.get_schema()
 
-    **When to use:** Start here when you need to understand what tables exist, or when someone asks about data that might be in multiple tables.
-
-    **What this does:** Shows all available tables so you can identify which ones contain the data you need.
-
-    **Next steps after using this:**
-    - If you see relevant tables, use `get_table_info(table_name)` to explore their structure
-
-    Returns:
-        List of all available tables in the database with current backend info
-    """
-    if _backend == "duckdb":
-        result_lst = []
-        conn = duckdb.connect(get_default_database_path("tuva-project-demo"))
-        schemas = conn.execute("SELECT schema_name FROM information_schema.schemata").fetchall()
-
-        for schema in schemas:
-            schema_name = schema[0]
-            tables = conn.execute(
-                f"SELECT table_name FROM information_schema.tables WHERE table_schema = '{schema_name}'"
-            ).fetchall()
-
-            if tables:
-                for table in tables:
-                    full_qualified_table_name = f"{schema_name}.{table[0]}"
-                    result_lst.append(full_qualified_table_name)
-
-        return f"{_get_backend_info()}\n📋 **Available Tables (query-ready names):**\n{'\n'.join(result_lst)}\n\n💡 **Copy-paste ready:** These table names can be used directly in your SQL queries!"
+    return f"{_backend_name}\n📋 **Available Tables (query-ready names):**\n{'\n'.join(tables)}\n\n💡 **Copy-paste ready:** These table names can be used directly in your SQL queries!"
 
 @mcp.tool()
 def get_table_info(table_name: str, show_sample: bool = True) -> str:
-    """📋 Explore a specific table's structure and see sample data.
-
-    **When to use:** After you know which table you need (from `get_database_schema()`), use this to understand the columns and data format.
-
-    **What this does:**
-    - Shows column names, types, and constraints
-    - Displays sample rows so you understand the actual data format
-    - Helps you write accurate SQL queries
-
-    **Pro tip:** Always look at sample data! It shows you the actual values, date formats, and data patterns.
-
-    Args:
-        table_name: Exact table name from the schema (case-sensitive). Can be simple name or fully qualified BigQuery name.
-        show_sample: Whether to include sample rows (default: True, recommended)
-
-    Returns:
-        Complete table structure with sample data to help you write queries
-    """
-    backend_info = _get_backend_info()
-
-    if _backend == "duckdb":
-        # Get column information
-        pragma_query = f"PRAGMA table_info({table_name})"
-        try:
-            result = _execute_duckdb_query(pragma_query)
-            if "error" in result.lower():
-                return f"{backend_info}❌ Table '{table_name}' not found. Use get_database_schema() to see available tables."
-
-            info_result = f"{backend_info}📋 **Table:** {table_name}\n\n**Column Information:**\n{result}"
-
-            if show_sample:
-                sample_query = f"SELECT * FROM {table_name} LIMIT 3"
-                sample_result = _execute_duckdb_query(sample_query)
-                info_result += (
-                    f"\n\n📊 **Sample Data (first 3 rows):**\n{sample_result}"
-                )
-
-            return info_result
-        except Exception as e:
-            return f"{backend_info}❌ Error examining table '{table_name}': {e}\n\n💡 Use get_database_schema() to see available tables."
+    return backend.get_table_info(table_name, show_sample=show_sample)
 
 @mcp.tool()
-def execute_duckdb_query(sql_query: str) -> str:
+def execute_query(sql_query: str) -> str:
     """🚀 Execute SQL queries to analyze data.
 
     **💡 Pro tip:** For best results, explore the database structure first!
@@ -377,7 +266,7 @@ def get_average_cms_hcc_risk_score() -> str:
     Returns:
         Average CMS-HCC Risk Scores
     """
-    if _backend == "duckdb":
+    if _backend_name == "duckdb":
         query = """
         select
             count(distinct person_id) as patient_count
@@ -412,7 +301,7 @@ def get_overall_readmission_rate() -> str:
     Returns:
         Overall readmission rate
     """
-    if _backend == "duckdb":
+    if _backend_name == "duckdb":
         query = """
         select 
             (select count(*)
@@ -435,7 +324,6 @@ def get_overall_readmission_rate() -> str:
 3. `execute_duckdb_query('your_sql')` ← Use exact names
 
 """
-
     return result
 
 def main():
