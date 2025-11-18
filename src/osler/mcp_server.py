@@ -6,7 +6,7 @@ import sqlparse
 from fastmcp import FastMCP
 
 from osler.config import get_default_database_path
-from osler.database_utils.duckdb_client import DuckDB
+from osler.database.duckdb_client import DuckDB
 
 # ---------------------------------------------------------
 # Initialize backend
