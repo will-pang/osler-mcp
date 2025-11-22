@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-class Database(ABC):
 
+class Database(ABC):
     @abstractmethod
     def execute_query(self, sql_query: str) -> str:
         pass
