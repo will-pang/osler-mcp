@@ -1,7 +1,11 @@
-import duckdb
 from pathlib import Path
+
+import duckdb
+
 from osler.config import get_default_database_path
+
 from .base import Database
+
 
 class DuckDB(Database):
     def __init__(self, db_path=None):
@@ -9,7 +13,7 @@ class DuckDB(Database):
 
         if not Path(self.db_path).exists():
             raise FileNotFoundError(f"DuckDB database not found: {self.db_path}")
-    
+
     def _conn(self):
         return duckdb.connect(self.db_path)
 
@@ -29,9 +33,7 @@ class DuckDB(Database):
         conn = self._conn()
         results = []
         try:
-            schemas = conn.execute(
-                "SELECT schema_name FROM information_schema.schemata"
-            ).fetchall()
+            schemas = conn.execute("SELECT schema_name FROM information_schema.schemata").fetchall()
             for (schema,) in schemas:
                 tables = conn.execute(
                     f"SELECT table_name FROM information_schema.tables WHERE table_schema = '{schema}'"

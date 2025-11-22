@@ -10,10 +10,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)-8s] %(name)s: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
-    handlers=[
-          logging.StreamHandler(),
-          logging.FileHandler("osler.log")
-      ]
+    handlers=[logging.StreamHandler(), logging.FileHandler("osler.log")],
 )
 logger = logging.getLogger(APP_NAME)
 
@@ -42,7 +39,7 @@ _PROJECT_DATA_DIR = _PROJECT_ROOT / "osler_data"
 
 DEFAULT_DATABASES_DIR = _PROJECT_DATA_DIR / "databases"
 
-SUPPORTED_DATASETS = {
+SUPPORTED_DATASETS = {  # Contains a collection of dataset configs
     "tuva-project-demo": {
         "default_db_filename": "tuva_project_demo.duckdb",
         "dbt_project_name": "tuva-project-demo",
@@ -72,8 +69,9 @@ def get_default_database_path(dataset_name: str) -> Path | None:
     logger.warning(f"Missing default_db_filename for dataset: {dataset_name}")
     return None
 
+
 def delete_default_database_path() -> None:
-    '''Deletes default database path for initiating new projects'''
+    """Deletes default database path for initiating new projects"""
     if os.path.exists(DEFAULT_DATABASES_DIR):
         shutil.rmtree(DEFAULT_DATABASES_DIR)
 

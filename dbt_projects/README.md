@@ -1,4 +1,4 @@
-## DBT-Supported Datasets
+## DBT-Required Datasets
 
 | Dataset Name        | Database |
 | ------------------- | -------- |

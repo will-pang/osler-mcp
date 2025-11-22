@@ -1,7 +1,5 @@
 import os
-from pathlib import Path
 
-import duckdb
 import sqlparse
 from fastmcp import FastMCP
 
@@ -25,6 +23,7 @@ mcp = FastMCP("osler")
 # Security validation
 # ---------------------------------------------------------
 
+
 def _is_safe_query(sql_query: str, internal_tool: bool = False) -> tuple[bool, str]:
     """Secure SQL validation - blocks injection attacks, allows legitimate queries."""
     try:
@@ -44,9 +43,7 @@ def _is_safe_query(sql_query: str, internal_tool: bool = False) -> tuple[bool, s
         statement_type = statement.get_type()
 
         # Allow SELECT and PRAGMA (PRAGMA is needed for schema exploration)
-        if statement_type not in (
-            "SELECT"
-        ):
+        if statement_type not in ("SELECT"):
             return False, "Only SELECT queries allowed"
 
         sql_upper = sql_query.strip().upper()
@@ -121,12 +118,14 @@ def _is_safe_query(sql_query: str, internal_tool: bool = False) -> tuple[bool, s
     except Exception as e:
         return False, f"Validation error: {e}"
 
+
 # ==========================================
 # INTERNAL QUERY EXECUTION FUNCTIONS
 # ==========================================
 # These functions perform the actual database operations
 # and are called by the MCP tools. This prevents MCP tools
 # from calling other MCP tools, which violates the MCP protocol.
+
 
 def _execute_query_internal(sql_query: str) -> str:
     """Internal query execution function that handles backend routing."""
@@ -176,15 +175,9 @@ def _execute_query_internal(sql_query: str) -> str:
             )
 
         if "syntax error" in error_msg:
-            suggestions.append(
-                "📝 **SQL syntax issue:** Check quotes, commas, and parentheses"
-            )
-            suggestions.append(
-                f"🎯 **Backend syntax:** Verify your SQL works with {_backend_name}"
-            )
-            suggestions.append(
-                "💭 **Try simpler:** Start with `SELECT * FROM table_name LIMIT 5`"
-            )
+            suggestions.append("📝 **SQL syntax issue:** Check quotes, commas, and parentheses")
+            suggestions.append(f"🎯 **Backend syntax:** Verify your SQL works with {_backend_name}")
+            suggestions.append("💭 **Try simpler:** Start with `SELECT * FROM table_name LIMIT 5`")
 
         if "describe" in error_msg.lower() or "show" in error_msg.lower():
             suggestions.append(
@@ -216,11 +209,13 @@ def _execute_query_internal(sql_query: str) -> str:
 
 📚 **Current Backend:** {_backend_name} - table names and syntax are backend-specific"""
 
+
 # ==========================================
 # MCP TOOLS - PUBLIC API
 # ==========================================
 # These are the tools exposed via MCP protocol.
 # They should NEVER call other MCP tools - only internal functions.
+
 
 @mcp.tool()
 def get_database_schema() -> str:
@@ -228,9 +223,11 @@ def get_database_schema() -> str:
 
     return f"{_backend_name}\n📋 **Available Tables (query-ready names):**\n{'\n'.join(tables)}\n\n💡 **Copy-paste ready:** These table names can be used directly in your SQL queries!"
 
+
 @mcp.tool()
 def get_table_info(table_name: str, show_sample: bool = True) -> str:
     return backend.get_table_info(table_name, show_sample=show_sample)
+
 
 @mcp.tool()
 def execute_query(sql_query: str) -> str:
@@ -254,6 +251,7 @@ def execute_query(sql_query: str) -> str:
         Query results or helpful error messages with next steps
     """
     return _execute_query_internal(sql_query)
+
 
 @mcp.tool()
 def get_average_cms_hcc_risk_score() -> str:
@@ -290,6 +288,7 @@ This ensures compatibility across different MIMIC-IV setups."""
 
     return result
 
+
 @mcp.tool()
 def get_overall_readmission_rate() -> str:
     """🏥 Get overall readmission rate
@@ -321,15 +320,17 @@ def get_overall_readmission_rate() -> str:
 💡 **For reliable results, use the proper workflow:**
 1. `get_database_schema()` ← See actual table names
 2. `get_table_info('table_name')` ← Understand structure
-3. `execute_duckdb_query('your_sql')` ← Use exact names
+3. `execute_query('your_sql')` ← Use exact names
 
 """
     return result
+
 
 def main():
     """Main entry point for MCP server."""
     # Run the FastMCP server
     mcp.run()
+
 
 if __name__ == "__main__":
     main()
