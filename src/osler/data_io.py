@@ -11,7 +11,7 @@ def initialize_dataset(dataset_name: str) -> bool:
         logger.error(f"Configuration for dataset '{dataset_name}' not found.")
         return False
 
-    # Initialization for DBT Projects
+    # For DBT Projects
     if dataset_config["dbt_project_name"]:
         dbt_project_path = clone_dbt_project(
             dataset_config["github_repo"], dataset_config["dbt_project_name"]
