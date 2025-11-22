@@ -34,7 +34,7 @@ def dataset_init_cmd(
     ] = "tuva-project-demo",
 ):
     dataset_key = dataset_name.lower()
-    delete_default_database_path()
+    delete_default_database_path()  # TODO: Move to DBT utils?
     initialization_successful = initialize_dataset(dataset_key)
 
     if not initialization_successful:
