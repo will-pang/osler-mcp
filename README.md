@@ -2,6 +2,12 @@
 
 [Sir William Osler](https://en.wikipedia.org/wiki/William_Osler)
 
+### 🗂️ Supported Datasets
+
+| Dataset Name        | Link                                          | Build Time                                 | Database | Supported Tools |
+| ------------------- | --------------------------------------------- | ------------------------------------------ | -------- | --------------- |
+| `tuva-project-demo` | [Github](https://github.com/tuva-health/demo) | Takes about 30 minutes to build completely | DuckDB   | ✅ DBT          |
+
 ### 📦 Pre-requisities
 
 Assuming you have [UV](https://docs.astral.sh/uv/getting-started/installation/) installed.
