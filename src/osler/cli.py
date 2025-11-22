@@ -1,4 +1,3 @@
-
 from typing import Annotated
 
 import typer
@@ -13,6 +12,7 @@ app = typer.Typer(
     add_completion=False,
     rich_markup_mode="markdown",
 )
+
 
 def version_callback(value: bool):
     if value:
@@ -31,7 +31,7 @@ def dataset_init_cmd(
             ),
             metavar="DATASET_NAME",
         ),
-    ] = "tuva-project-demo"
+    ] = "tuva-project-demo",
 ):
     dataset_key = dataset_name.lower()
     delete_default_database_path()
@@ -39,18 +39,17 @@ def dataset_init_cmd(
 
     if not initialization_successful:
         typer.secho(
-            (
-                f"Dataset '{dataset_name}' initialization FAILED. "
-                "Please check logs for details."
-            ),
+            (f"Dataset '{dataset_name}' initialization FAILED. Please check logs for details."),
             fg=typer.colors.RED,
             err=True,
         )
         raise typer.Exit(code=1)
 
+
 @app.command("config")
 def config_cmd():
     pass
+
 
 if __name__ == "__main__":
     app()
