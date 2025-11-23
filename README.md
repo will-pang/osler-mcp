@@ -2,6 +2,12 @@
 
 [Sir William Osler](https://en.wikipedia.org/wiki/William_Osler)
 
+### 🗂️ Supported Datasets
+
+| Dataset Name        | Link                                          | Build Time                                 | Database | Required Tools 🔧 |
+| ------------------- | --------------------------------------------- | ------------------------------------------ | -------- | ----------------- |
+| `tuva-project-demo` | [Github](https://github.com/tuva-health/demo) | Takes about 30 minutes to build completely | DuckDB   | DBT               |
+
 ### 📦 Pre-requisities
 
 Assuming you have [UV](https://docs.astral.sh/uv/getting-started/installation/) installed.
@@ -28,12 +34,12 @@ source .venv/bin/activate
 **Step 4: Install Osler**
 
 ```bash
-uv sync
+uv sync && uvx pre-commit install
 ```
 
 ### 🏃‍♂️ Getting Started
 
-#### [dbt projects Example](dbt_projects/README.md)
+#### Tuva-Project-Demo MCP Server
 
 1. **Download [tuva-health demo](https://github.com/tuva-health/demo) and build models into DuckDB database**:
 
