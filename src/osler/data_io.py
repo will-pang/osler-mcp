@@ -1,9 +1,22 @@
-from osler.config import get_dataset_config, logger
+from osler.config import (
+    create_default_database_path,
+    delete_default_database_path,
+    get_dataset_config,
+    logger,
+)
 from osler.dbt.utils import clone_dbt_project, run_dbt_command
 
 
 def initialize_dataset(dataset_name: str) -> bool:
     """Initializes a dataset: downloads files and loads them into a database."""
+    delete_default_database_path()  # Make sure that default database path is empty
+    default_database_path = create_default_database_path(
+        dataset_name
+    )  # TODO: Fix and see if this needs output
+
+    if not default_database_path:
+        logger.error("Default database path not successfully created")
+
     dataset_config = get_dataset_config(dataset_name)
 
     if not dataset_config:

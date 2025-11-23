@@ -3,7 +3,7 @@ from typing import Annotated
 import typer
 
 from osler import __version__
-from osler.config import SUPPORTED_DATASETS, delete_default_database_path
+from osler.config import SUPPORTED_DATASETS
 from osler.data_io import initialize_dataset
 
 app = typer.Typer(
@@ -34,7 +34,6 @@ def dataset_init_cmd(
     ] = "tuva-project-demo",
 ):
     dataset_key = dataset_name.lower()
-    delete_default_database_path()  # Make sure that default database path is empty
     initialization_successful = initialize_dataset(dataset_key)
 
     if not initialization_successful:

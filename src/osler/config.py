@@ -38,6 +38,7 @@ _PROJECT_ROOT = get_project_root()
 _PROJECT_DATA_DIR = _PROJECT_ROOT / "osler_data"
 
 DEFAULT_DATABASES_DIR = _PROJECT_DATA_DIR / "databases"
+print(f"DEFAULT_DATABASES_DIR: {DEFAULT_DATABASES_DIR}")
 
 SUPPORTED_DATASETS = {  # Contains a collection of dataset configs
     "tuva-project-demo": {
@@ -56,18 +57,18 @@ def get_dataset_config(dataset_name: str) -> dict | None:
     return SUPPORTED_DATASETS.get(dataset_name.lower())
 
 
-def get_default_database_path(dataset_name: str) -> Path | None:
+def create_default_database_path(dataset_name: str) -> bool:
     """
     Return the default DuckDB path for a given dataset,
     under <project_root>/osler_data/databases/.
     """
     cfg = get_dataset_config(dataset_name)
-    if not cfg:
+    if cfg:
         DEFAULT_DATABASES_DIR.mkdir(parents=True, exist_ok=True)
-        return DEFAULT_DATABASES_DIR / cfg["db_filename"]
+    else:
+        logger.error(f"Unsupported dataset: {dataset_name}")
 
-    logger.warning(f"Missing db_filename for dataset: {dataset_name}")
-    return None
+    return True
 
 
 def delete_default_database_path() -> None:
