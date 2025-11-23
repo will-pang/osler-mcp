@@ -16,6 +16,7 @@ def initialize_dataset(dataset_name: str) -> bool:
 
     if not default_database_path:
         logger.error("Default database path not successfully created")
+        return False
 
     dataset_config = get_dataset_config(dataset_name)
 
