@@ -39,7 +39,7 @@ uv sync && uvx pre-commit install
 
 ### 🏃‍♂️ Getting Started
 
-#### [dbt projects Example](dbt_projects/README.md)
+#### Tuva-Project-Demo MCP Server
 
 1. **Download [tuva-health demo](https://github.com/tuva-health/demo) and build models into DuckDB database**:
 
