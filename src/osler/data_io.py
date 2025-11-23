@@ -4,7 +4,6 @@ from osler.dbt.utils import clone_dbt_project, run_dbt_command
 
 def initialize_dataset(dataset_name: str) -> bool:
     """Initializes a dataset: downloads files and loads them into a database."""
-    # database_path = get_default_database_path(dataset_name)
     dataset_config = get_dataset_config(dataset_name)
 
     if not dataset_config:

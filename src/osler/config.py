@@ -41,7 +41,7 @@ DEFAULT_DATABASES_DIR = _PROJECT_DATA_DIR / "databases"
 
 SUPPORTED_DATASETS = {  # Contains a collection of dataset configs
     "tuva-project-demo": {
-        "default_db_filename": "tuva_project_demo.duckdb",
+        "db_filename": "tuva_project_demo.duckdb",
         "dbt_project_name": "tuva-project-demo",
         "github_repo": "https://github.com/tuva-health/demo",
     }
@@ -62,16 +62,16 @@ def get_default_database_path(dataset_name: str) -> Path | None:
     under <project_root>/osler_data/databases/.
     """
     cfg = get_dataset_config(dataset_name)
-    if cfg and "default_db_filename" in cfg:
+    if not cfg:
         DEFAULT_DATABASES_DIR.mkdir(parents=True, exist_ok=True)
-        return DEFAULT_DATABASES_DIR / cfg["default_db_filename"]
+        return DEFAULT_DATABASES_DIR / cfg["db_filename"]
 
-    logger.warning(f"Missing default_db_filename for dataset: {dataset_name}")
+    logger.warning(f"Missing db_filename for dataset: {dataset_name}")
     return None
 
 
 def delete_default_database_path() -> None:
-    """Deletes default database path for initiating new projects"""
+    """Deletes default database path"""
     if os.path.exists(DEFAULT_DATABASES_DIR):
         shutil.rmtree(DEFAULT_DATABASES_DIR)
 
