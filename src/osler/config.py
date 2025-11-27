@@ -65,10 +65,11 @@ def create_default_database_path(dataset_name: str) -> bool:
     cfg = get_dataset_config(dataset_name)
     if cfg:
         DEFAULT_DATABASES_DIR.mkdir(parents=True, exist_ok=True)
+        return True
     else:
         logger.error(f"Unsupported dataset: {dataset_name}")
 
-    return True
+    return False
 
 
 def delete_default_database_path() -> None:
