@@ -1,7 +1,7 @@
 import os
 
 import sqlparse
-from fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP
 
 from osler.database.duckdb_client import DuckDB
 from osler.dbt.utils import get_dbt_model_lineage
@@ -12,7 +12,10 @@ from osler.dbt.utils import get_dbt_model_lineage
 _backend_name = os.getenv("OSLER_BACKEND", "duckdb")
 
 if _backend_name == "duckdb":
-    _db_path = os.getenv("OSLER_DB_PATH")
+    _db_path = (
+        os.getenv("OSLER_DB_PATH")
+        or "Desktop/Coding_Stuff/osler-mcp/osler_data/databases/tuva_project_demo.duckdb"
+    )
     backend = DuckDB(_db_path)
 else:
     raise ValueError(f"Unsupported backend: {_backend_name}")
@@ -279,7 +282,8 @@ def get_model_lineage(table_name: str, direction: str, depth: int) -> str:
     Returns:
         Newline-separated list of related dbt models in the dependency chain
     """
-    return get_dbt_model_lineage(table_name, direction, depth)
+    lineage = get_dbt_model_lineage(table_name, direction, depth)
+    return lineage
 
 
 def main():
