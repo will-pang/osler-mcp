@@ -56,13 +56,19 @@ uv sync && uvx pre-commit install
          "command": "<PROJECT_ROOT>/.venv/bin/osler-mcp",
          "args": [],
          "env": {
-           "OSLER_BACKEND": "duckdb"
-         },
-         "cwd": "<PROJECT_ROOT>/.venv/bin/osler-mcp"
+           "OSLER_BACKEND": "duckdb",
+            "PATH": "<PROJECT_ROOT>/.venv/bin:/usr/local/bin:/usr/bin:/bin"
+         }
        }
      }
    }
    ```
+
+To test:
+
+```bash
+mcp dev <PROJECT_ROOT>/src/osler/mcp_server.py
+```
 
 ## Credits
 
