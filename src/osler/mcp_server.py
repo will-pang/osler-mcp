@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import sqlparse
 from mcp.server.fastmcp import FastMCP
@@ -12,10 +13,11 @@ from osler.dbt.utils import get_dbt_model_lineage
 _backend_name = os.getenv("OSLER_BACKEND", "duckdb")
 
 if _backend_name == "duckdb":
-    _db_path = (
-        os.getenv("OSLER_DB_PATH")
-        or "Desktop/Coding_Stuff/osler-mcp/osler_data/databases/tuva_project_demo.duckdb"
-    )
+    ROOT = Path(__file__).resolve().parents[2]  # repo root
+    DEFAULT_DB = ROOT / "osler_data/databases/tuva_project_demo.duckdb"
+
+    _db_path = Path(os.getenv("OSLER_DB_PATH", DEFAULT_DB))
+
     backend = DuckDB(_db_path)
 else:
     raise ValueError(f"Unsupported backend: {_backend_name}")
