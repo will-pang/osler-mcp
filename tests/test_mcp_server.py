@@ -25,6 +25,33 @@ class TestMCPTools:
                  """
                 },
             )
-            result_text = str(result)
+            result_text = str(result.structured_content)
             assert "count" in result_text.lower()
             assert "10" in result_text
+
+            # Test get_table_info
+            result = await client.call_tool(
+                "get_table_info",
+                {
+                    "table_name": "chronic_conditions.tuva_chronic_conditions_long",
+                    "show_sample": False,
+                },
+            )
+            result_text = str(result.structured_content)
+            assert "person_id" in result_text
+            assert "condition" in result_text
+            assert "first_diagnosis_date" in result_text
+            assert "last_diagnosis_date" in result_text
+            assert "tuva_last_run" in result_text
+
+            # Test get_model_lineage tool
+            result = await client.call_tool(
+                "get_model_lineage",
+                {
+                    "table_name": "chronic_conditions__tuva_chronic_conditions_long",
+                    "direction": "parent",
+                    "depth": 1,
+                },
+            )
+            result_text = str(result.structured_content)
+            assert "tuva_chronic_conditions__stg_core__condition" in result_text
