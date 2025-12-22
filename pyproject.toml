@@ -20,6 +20,7 @@ dependencies = [
     "pandas>=2.3.2",
     "pre-commit>=4.3.0",
     "pyjwt>=2.10.1",
+    "pytest>=9.0.2",
     "ruff>=0.12.12",
     "sqlparse>=0.5.3",
     "typer>=0.17.3",
@@ -57,3 +58,10 @@ ignore = [
 
 [tool.ruff.lint.isort]
 known-first-party = ["m3"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--ignore=dbt_projects"
