@@ -1,10 +1,11 @@
 import os
+from pathlib import Path
 
 import sqlparse
-from fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP
 
-from osler.config import get_default_database_path
 from osler.database.duckdb_client import DuckDB
+from osler.dbt.utils import get_dbt_model_lineage
 
 # ---------------------------------------------------------
 # Initialize backend
@@ -12,7 +13,11 @@ from osler.database.duckdb_client import DuckDB
 _backend_name = os.getenv("OSLER_BACKEND", "duckdb")
 
 if _backend_name == "duckdb":
-    _db_path = os.getenv("OSLER_DB_PATH") or get_default_database_path("tuva-project-demo")
+    ROOT = Path(__file__).resolve().parents[2]  # repo root
+    DEFAULT_DB = ROOT / "osler_data/databases/tuva_project_demo.duckdb"
+
+    _db_path = Path(os.getenv("OSLER_DB_PATH", DEFAULT_DB))
+
     backend = DuckDB(_db_path)
 else:
     raise ValueError(f"Unsupported backend: {_backend_name}")
@@ -254,76 +259,33 @@ def execute_query(sql_query: str) -> str:
 
 
 @mcp.tool()
-def get_average_cms_hcc_risk_score() -> str:
-    """Get Average CMS-HCC Risk Scores
+def get_model_lineage(table_name: str, direction: str, depth: int) -> str:
+    """🔍 Explore dbt model lineage to understand data transformations.
 
-    **For reliable queries:** Use `get_database_schema()` → `get_table_info()` → `execute_duckdb_query()` workflow.
+    **What it does:**
+    Discovers upstream (parent) or downstream (children) dbt models in the data pipeline
+    to help you understand how data flows through transformations.
 
-    Args:
+    **💡 Use cases:**
+    - **Trace data sources:** Find which raw tables feed into a final model
+    - **Impact analysis:** See which downstream models depend on a table
+    - **Understand transformations:** Map the full data transformation pipeline
 
-    Returns:
-        Average CMS-HCC Risk Scores
-    """
-    if _backend_name == "duckdb":
-        query = """
-        select
-            count(distinct person_id) as patient_count
-            , avg(blended_risk_score) as average_blended_risk_score
-            , avg(normalized_risk_score) as average_normalized_risk_score
-            , avg(payment_risk_score) as average_payment_risk_score
-        from cms_hcc.patient_risk_scores
-        """
-
-    # Execute with error handling that suggests proper workflow
-    result = _execute_query_internal(query)
-    if "error" in result.lower() or "not found" in result.lower():
-        return f"""❌ **Convenience function failed:** {result}
-
-💡 **For reliable results, use the proper workflow:**
-1. `get_database_schema()` ← See actual table names
-2. `get_table_info('table_name')` ← Understand structure
-3. `execute_duckdb_query('your_sql')` ← Use exact names
-
-This ensures compatibility across different MIMIC-IV setups."""
-
-    return result
-
-
-@mcp.tool()
-def get_overall_readmission_rate() -> str:
-    """🏥 Get overall readmission rate
-
-    **For reliable queries:** Use `get_database_schema()` → `get_table_info()` → `execute_duckdb_query()` workflow.
+    **How lineage works:**
+    - **Parent (upstream):** Shows models that feed INTO the specified table
+    - **Children (downstream):** Shows models that are built FROM the specified table
+    - **Depth:** Controls how many levels to traverse in the dependency tree
 
     Args:
+        table_name: Name of the dbt model/table to analyze (e.g., 'core__patient')
+        direction: Either 'parent' (upstream) or 'children' (downstream)
+        depth: Number of levels to traverse (e.g., 1 for direct dependencies, 2+ for deeper lineage)
 
     Returns:
-        Overall readmission rate
+        Newline-separated list of related dbt models in the dependency chain
     """
-    if _backend_name == "duckdb":
-        query = """
-        select 
-            (select count(*)
-            from readmissions.readmission_summary
-            where index_admission_flag = 1 and unplanned_readmit_30_flag = 1) * 100
-            /
-            (select count(*)
-            from readmissions.readmission_summary
-            where index_admission_flag = 1) as overall_readmission_rate
-        """
-
-    # Execute with error handling that suggests proper workflow
-    result = _execute_query_internal(query)
-    if "error" in result.lower() or "not found" in result.lower():
-        return f"""❌ **Convenience function failed:** {result}
-
-💡 **For reliable results, use the proper workflow:**
-1. `get_database_schema()` ← See actual table names
-2. `get_table_info('table_name')` ← Understand structure
-3. `execute_query('your_sql')` ← Use exact names
-
-"""
-    return result
+    lineage = get_dbt_model_lineage(table_name, direction, depth)
+    return lineage
 
 
 def main():

@@ -25,6 +25,7 @@ def initialize_dataset(dataset_name: str) -> bool:
         return False
 
     # For DBT Projects
+    logger.info(f"Initializing '{dataset_name}'. This process can take sometime...")
     if dataset_config["dbt_project_name"]:
         dbt_project_path = clone_dbt_project(
             dataset_config["github_repo"], dataset_config["dbt_project_name"]

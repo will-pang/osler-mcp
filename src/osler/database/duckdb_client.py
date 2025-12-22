@@ -1,18 +1,11 @@
-from pathlib import Path
-
 import duckdb
-
-from osler.config import get_default_database_path
 
 from .base import Database
 
 
 class DuckDB(Database):
     def __init__(self, db_path=None):
-        self.db_path = db_path or get_default_database_path("tuva-project-demo")
-
-        if not Path(self.db_path).exists():
-            raise FileNotFoundError(f"DuckDB database not found: {self.db_path}")
+        self.db_path = db_path
 
     def _conn(self):
         return duckdb.connect(self.db_path)
