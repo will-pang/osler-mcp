@@ -64,7 +64,7 @@ uv sync && uvx pre-commit install
    }
    ```
 
-To test:
+To test (will be deprecated soon):
 
 ```bash
 mcp dev <PROJECT_ROOT>/src/osler/mcp_server.py
