@@ -14,9 +14,9 @@ class TestMCPTools:
         """Test MCP tools through the FastMCP client."""
 
         # Test via FastMCP client
-        async with Client(mcp) as client:
+        async with Client(mcp) as mcp_client:
             # Test execute_query tool
-            result = await client.call_tool(
+            result = await mcp_client.call_tool(
                 "execute_query",
                 {
                     "sql_query": """
@@ -30,7 +30,7 @@ class TestMCPTools:
             assert "10" in result_text
 
             # Test get_table_info
-            result = await client.call_tool(
+            result = await mcp_client.call_tool(
                 "get_table_info",
                 {
                     "table_name": "chronic_conditions.tuva_chronic_conditions_long",
@@ -45,7 +45,7 @@ class TestMCPTools:
             assert "tuva_last_run" in result_text
 
             # Test get_model_lineage tool
-            result = await client.call_tool(
+            result = await mcp_client.call_tool(
                 "get_model_lineage",
                 {
                     "table_name": "chronic_conditions__tuva_chronic_conditions_long",
