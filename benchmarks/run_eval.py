@@ -23,7 +23,6 @@ async def main():
         response = await adapter.run(prompt=benchmark_query.query, tools=all_tools)
 
         responses.append(response)
-        print(f"Response ({idx}): {response.response_text}\n\n\n")
 
     # Step 5: Save responses to CSV
     model_response_to_csv(responses, csv_path, output_path)
