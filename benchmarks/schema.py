@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 
 
@@ -23,8 +24,16 @@ class ModelResponse:
     error: str | None = None
 
     @property
-    def tool_calls_str(self) -> str:
+    def tool_names(self) -> str:
         return "; ".join([f"{tc.tool_name}" for tc in self.tool_calls]) if self.tool_calls else ""
+
+    @property
+    def tool_arguments(self) -> str:
+        return (
+            "; ".join([f"{tc.tool_name}: {json.dumps(tc.arguments)}" for tc in self.tool_calls])
+            if self.tool_calls
+            else ""
+        )
 
 
 @dataclass

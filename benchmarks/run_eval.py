@@ -10,8 +10,8 @@ async def main():
     all_tools = await get_mcp_tools()
 
     # Step 2: Load benchmark queries from CSV
-    csv_path = get_project_root() / "benchmarks/evals/tuva_health_demo_questions.csv"
-    output_path = get_project_root() / "benchmarks/evals/output_tuva_health_demo_questions.csv"
+    csv_path = get_project_root() / "benchmarks/evals/tuva_project_demo/input.csv"
+    output_path = get_project_root() / "benchmarks/evals/tuva_project_demo/output.csv"
     benchmark_queries = csv_to_benchmark_queries(csv_path)
 
     # Step 3: Choose Model
