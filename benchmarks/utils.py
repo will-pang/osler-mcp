@@ -48,17 +48,22 @@ def model_response_to_csv(responses: list[ModelResponse], csv_path: str, output_
         open(output_path, "w", encoding="utf-8", newline="") as outfile,
     ):
         reader = csv.DictReader(infile)
-        fieldnames = list(reader.fieldnames) + ["model", "tool_calls", "total_latency_ms", "error"]
-        # fieldnames = list(reader.fieldnames) + ['model', 'response_text', 'tool_calls', 'total_latency_ms', 'error']
+        fieldnames = list(reader.fieldnames) + [
+            "model",
+            "tool_calls",
+            "tool_arguments",
+            "response_text",
+            "error",
+        ]
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
 
         # Read and append simultaneously
         for row, response in zip(reader, responses):
             row["model"] = response.model
-            # row['response_text'] = response.response_text
-            row["tool_calls"] = response.tool_calls_str
-            row["total_latency_ms"] = response.total_latency_ms
+            row["tool_calls"] = response.tool_names
+            row["tool_arguments"] = response.tool_arguments
+            row["response_text"] = response.response_text
             row["error"] = response.error or ""
 
             writer.writerow(row)

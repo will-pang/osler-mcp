@@ -10,8 +10,8 @@ async def main():
     all_tools = await get_mcp_tools()
 
     # Step 2: Load benchmark queries from CSV
-    csv_path = get_project_root() / "benchmarks/evals/tuva_health_demo_questions.csv"
-    output_path = get_project_root() / "benchmarks/evals/output_tuva_health_demo_questions.csv"
+    csv_path = get_project_root() / "benchmarks/evals/tuva_project_demo/input.csv"
+    output_path = get_project_root() / "benchmarks/evals/tuva_project_demo/output.csv"
     benchmark_queries = csv_to_benchmark_queries(csv_path)
 
     # Step 3: Choose Model
@@ -23,7 +23,6 @@ async def main():
         response = await adapter.run(prompt=benchmark_query.query, tools=all_tools)
 
         responses.append(response)
-        print(f"Response ({idx}): {response.response_text}\n\n\n")
 
     # Step 5: Save responses to CSV
     model_response_to_csv(responses, csv_path, output_path)
