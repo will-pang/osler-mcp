@@ -17,6 +17,7 @@ class ModelResponse:
     """Complete result from a model run"""
 
     model: str
+    session_id: str
     query: str
     response_text: str
     tool_calls: list[ToolCallEvent]
