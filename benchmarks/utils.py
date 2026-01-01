@@ -50,6 +50,7 @@ def model_response_to_csv(responses: list[ModelResponse], csv_path: str, output_
         reader = csv.DictReader(infile)
         fieldnames = list(reader.fieldnames) + [
             "model",
+            "session_id",
             "tool_calls",
             "tool_arguments",
             "response_text",
@@ -61,6 +62,7 @@ def model_response_to_csv(responses: list[ModelResponse], csv_path: str, output_
         # Read and append simultaneously
         for row, response in zip(reader, responses):
             row["model"] = response.model
+            row["session_id"] = response.session_id
             row["tool_calls"] = response.tool_names
             row["tool_arguments"] = response.tool_arguments
             row["response_text"] = response.response_text
