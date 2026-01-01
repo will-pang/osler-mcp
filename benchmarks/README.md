@@ -1,10 +1,15 @@
+# General Instructions
+
 To run:
 
 ```bash
 uv run python -m benchmarks.run_eval
 ```
 
-Open Source Model (Via Ollama):
+## Downloading Open Source Models locally (Ollama)
+
+### gpt-oss:20b
+
 ```bash
 ollama pull gpt-oss:20b
 # quick sanity check (optional)
