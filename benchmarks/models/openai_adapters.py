@@ -11,9 +11,9 @@ from benchmarks.utils import call_tool
 load_dotenv()
 
 
-class AsyncOpenAIAdapter:
-    def __init__(self, model="gpt-4-turbo"):
-        self.client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
+class BaseAsyncOpenAIAdapter:
+    def __init__(self, client, model: str):
+        self.client = client
         self.model = model
 
     def convert_mcp_tools_schema_to_adapter(self, mcp_tools: list) -> list:
@@ -121,6 +121,7 @@ class AsyncOpenAIAdapter:
 
             return ModelResponse(
                 model=self.model,
+                response_id=response.id,
                 query=prompt,
                 response_text=response_text,
                 tool_calls=tool_calls,
@@ -131,3 +132,17 @@ class AsyncOpenAIAdapter:
         except Exception as e:
             print(e)
             return False
+
+
+class AsyncOpenAIAdapter(BaseAsyncOpenAIAdapter):
+    def __init__(self, model="gpt-4-turbo"):
+        client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
+        super().__init__(client, model)
+
+
+class AsyncOpenAIOSSAdapter(BaseAsyncOpenAIAdapter):
+    def __init__(self, model="gpt-oss-20b-ctx32k:latest", base_url=None, api_key=None):
+        base_url = base_url or "http://localhost:11434/v1"
+        api_key = api_key or os.environ.get("GPT_OSS_API_KEY", "ollama")
+        client = AsyncOpenAI(api_key=api_key, base_url=base_url)
+        super().__init__(client, model)
