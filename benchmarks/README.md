@@ -6,7 +6,7 @@ To run:
 uv run python -m benchmarks.run_eval
 ```
 
-## Downloading Open Source Models locally (Ollama)
+## Running local models (via Ollama)
 
 ### gpt-oss:20b
 
