@@ -121,7 +121,7 @@ class BaseAsyncOpenAIAdapter:
 
             return ModelResponse(
                 model=self.model,
-                response_id=response.id,
+                session_id=response.id,
                 query=prompt,
                 response_text=response_text,
                 tool_calls=tool_calls,

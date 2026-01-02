@@ -5,6 +5,7 @@ from benchmarks.utils import csv_to_benchmark_queries, get_mcp_tools, model_resp
 from src.osler.config import get_project_root
 
 EVAL_FILE_PATH = "benchmarks/evals/tuva_project_demo/"
+MODEL_NAME = "gpt-oss-20b-ctx32k:latest"
 
 
 async def main():
@@ -12,8 +13,8 @@ async def main():
     all_tools = await get_mcp_tools()
 
     # Step 2: Load benchmark queries from CSV
-    csv_path = get_project_root() / EVAL_FILE_PATH / "input.csv"
-    output_path = get_project_root() / EVAL_FILE_PATH / "output.csv"
+    csv_path = get_project_root() / EVAL_FILE_PATH / "input_small.csv"
+    output_path = get_project_root() / EVAL_FILE_PATH / f"output_{MODEL_NAME}.csv"
     benchmark_queries = csv_to_benchmark_queries(csv_path)
 
     # Step 3: Load tool policy
@@ -23,7 +24,7 @@ async def main():
 
     # Step 4: Choose Model
     # adapter = AsyncOpenAIAdapter(model="gpt-4-turbo")
-    adapter = AsyncOpenAIOSSAdapter(model="gpt-oss-20b-ctx32k:latest")
+    adapter = AsyncOpenAIOSSAdapter(model=MODEL_NAME)
 
     # Step 5: Iterate over each benchmark query and collect responses
     responses = []
