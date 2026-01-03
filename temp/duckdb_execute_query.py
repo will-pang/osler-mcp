@@ -5,7 +5,7 @@ import duckdb
 conn = duckdb.connect("osler_data/databases/tuva_project_demo.duckdb")
 
 query = Path(
-    "benchmarks/evals/tuva_project_demo/golden_query/average_cms_hcc_risk_scores_by_patient_location.sql"
+    "benchmarks/evals/tuva_project_demo/golden_query/exclusion_reason_breakdown.sql"
 ).read_text()
 
 # query = """
