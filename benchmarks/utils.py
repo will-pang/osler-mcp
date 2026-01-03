@@ -54,7 +54,7 @@ def model_response_to_csv(responses: list[ModelResponse], csv_path: str, output_
             "tool_calls",
             "tool_arguments",
             "response_text",
-            "error",
+            "total_latency_ms",
         ]
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -66,7 +66,7 @@ def model_response_to_csv(responses: list[ModelResponse], csv_path: str, output_
             row["tool_calls"] = response.tool_names
             row["tool_arguments"] = response.tool_arguments
             row["response_text"] = response.response_text
-            row["error"] = response.error or ""
+            row["total_latency_ms"] = response.total_latency_ms
 
             writer.writerow(row)
 
