@@ -5,7 +5,7 @@ import time
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 
-from benchmarks.schema import ModelResponse, ToolCallEvent
+from benchmarks.schema import FastMCPToolSchema, ModelResponse, ToolCallEvent
 from benchmarks.utils import call_tool
 
 load_dotenv()
@@ -16,7 +16,7 @@ class BaseAsyncOpenAIAdapter:
         self.client = client
         self.model = model
 
-    def convert_mcp_tools_schema_to_adapter(self, mcp_tools: list) -> list:
+    def convert_fastmcp_tools_schema_to_adapter(self, mcp_tools: list[FastMCPToolSchema]) -> list:
         openai_tools = []
 
         for tool in mcp_tools:
@@ -25,13 +25,8 @@ class BaseAsyncOpenAIAdapter:
                     "type": "function",
                     "function": {
                         "name": tool.name,
-                        "description": tool.description or "",
-                        "parameters": tool.inputSchema
-                        or {
-                            "type": "object",
-                            "properties": {},
-                            "required": [],
-                        },
+                        "description": tool.description,
+                        "parameters": tool.inputSchema,
                     },
                 }
             )
@@ -42,7 +37,7 @@ class BaseAsyncOpenAIAdapter:
         tool_calls = []
         messages = [{"role": "user", "content": prompt}]
 
-        adapter_mcp_tools = self.convert_mcp_tools_schema_to_adapter(tools)
+        adapter_mcp_tools = self.convert_fastmcp_tools_schema_to_adapter(tools)
 
         try:
             response = await self.client.chat.completions.create(
@@ -135,13 +130,13 @@ class BaseAsyncOpenAIAdapter:
 
 
 class AsyncOpenAIAdapter(BaseAsyncOpenAIAdapter):
-    def __init__(self, model="gpt-4-turbo"):
+    def __init__(self, model):
         client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
         super().__init__(client, model)
 
 
 class AsyncOpenAIOSSAdapter(BaseAsyncOpenAIAdapter):
-    def __init__(self, model="gpt-oss-20b-ctx32k:latest", base_url=None, api_key=None):
+    def __init__(self, model, base_url=None, api_key=None):
         base_url = base_url or "http://localhost:11434/v1"
         api_key = api_key or os.environ.get("GPT_OSS_API_KEY", "ollama")
         client = AsyncOpenAI(api_key=api_key, base_url=base_url)

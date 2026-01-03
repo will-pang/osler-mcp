@@ -1,11 +1,14 @@
 import asyncio
 
-from benchmarks.models.openai_adapters import AsyncOpenAIOSSAdapter
+from benchmarks.models.qwen_adapters import AsyncQwenAdapter
 from benchmarks.utils import csv_to_benchmark_queries, get_mcp_tools, model_response_to_csv
 from src.osler.config import get_project_root
 
 EVAL_FILE_PATH = "benchmarks/evals/tuva_project_demo/"
-MODEL_NAME = "gpt-oss-20b-ctx32k:latest"
+# MODEL_NAME = "gpt-oss-20b-ctx32k:latest"
+# MODEL_NAME = "gpt-4-turbo"
+# MODEL_NAME = "claude-sonnet-4-5-20250929"
+MODEL_NAME = "qwen2.5:7b-ctx32k"
 
 
 async def main():
@@ -23,8 +26,10 @@ async def main():
         tool_policy = f.read()
 
     # Step 4: Choose Model
-    # adapter = AsyncOpenAIAdapter(model="gpt-4-turbo")
-    adapter = AsyncOpenAIOSSAdapter(model=MODEL_NAME)
+    # adapter = AsyncOpenAIAdapter(model=MODEL_NAME)
+    # adapter = AsyncOpenAIOSSAdapter(model=MODEL_NAME)
+    # adapter = AsyncClaudeAdapter(model=MODEL_NAME)
+    adapter = AsyncQwenAdapter(model=MODEL_NAME)
 
     # Step 5: Iterate over each benchmark query and collect responses
     responses = []

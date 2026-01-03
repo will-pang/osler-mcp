@@ -146,7 +146,7 @@ def _execute_query_internal(sql_query: str) -> str:
         💡 **Recommended workflow:**
         1. `get_database_schema()` ← See available tables
         2. `get_table_info('table_name')` ← Explore structure
-        3. `execute_mimic_query('SELECT ...')` ← Run your analysis"""
+        3. `execute_query('SELECT ...')` ← Run your analysis"""
 
         return f"❌ **Security Error:** {message}\n\n💡 **Tip:** Only SELECT statements are allowed for data analysis."
 

@@ -1,5 +1,19 @@
 import json
 from dataclasses import dataclass
+from typing import Any, Dict, Optional
+
+
+@dataclass
+class FastMCPToolSchema:
+    """Represents a single MCP tool definition as exposed by a FastMCP server"""
+
+    name: str
+    inputSchema: Dict[str, Any]
+    title: Optional[str] = None
+    description: Optional[str] = None
+    outputSchema: Optional[Dict[str, Any]] = None
+    annotations: Optional[Dict[str, Any]] = None
+    meta: Optional[Dict[str, Any]] = None
 
 
 @dataclass
