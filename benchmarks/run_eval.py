@@ -16,7 +16,7 @@ async def main():
     all_tools = await get_mcp_tools()
 
     # Step 2: Load benchmark queries from CSV
-    csv_path = get_project_root() / EVAL_FILE_PATH / "qsheet.csv"
+    csv_path = get_project_root() / EVAL_FILE_PATH / "qsheet_small.csv"
     output_path = get_project_root() / EVAL_FILE_PATH / f"output_{MODEL_NAME}.csv"
     benchmark_queries = csv_to_benchmark_queries(csv_path)
 
