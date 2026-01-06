@@ -1,0 +1,92 @@
+Query,Golden Query Relative Path,Golden Table,model,session_id,tool_calls,tool_arguments,response_text,total_runtime_s
+What is the prevalence of Tuva Chronic Conditions? Give me a breakout by condition,benchmarks/evals/tuva_project_demo/golden_query/prevalence_tuva_chronic_conditions.sql,chronic_conditions.tuva_chronic_conditions_long,gpt-4-turbo,chatcmpl-Cv5L5qYiaxusOoAz4pPw1i6YW4fus,get_database_schema; get_table_info; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""chronic_conditions.tuva_chronic_conditions_long""}; execute_query: {""sql_query"": ""SELECT condition, COUNT(person_id) AS prevalence FROM chronic_conditions.tuva_chronic_conditions_long GROUP BY condition ORDER BY prevalence DESC""}","The prevalence of various chronic conditions among patients in the Tuva dataset is shown below. Here are the top conditions along with their count:
+
+- **Dyslipidemias**: 848 cases
+- **Hypertension**: 845 cases
+- **Osteoarthritis**: 589 cases
+- **Gastroesophageal Reflux**: 583 cases
+- **Atherosclerosis**: 573 cases
+- **Cardiac Dysrhythmias**: 559 cases
+- **Cataract**: 530 cases
+- **Obesity**: 473 cases
+- **Diabetes mellitus**: 448 cases
+- **Anxiety Disorders**: 431 cases
+
+Further conditions and their prevalence figures continue down the list.",27.117
+What is the count of ED visits by CCSR Category and Body System?,benchmarks/evals/tuva_project_demo/golden_query/count_of_ed_visits_by_ccsr.sql,"""[""""core.encounter"""",""""ccsr.long_condition_category""""]""",gpt-4-turbo,chatcmpl-Cv5LY3w5Pq7jMk20smXCpsikicf8a,get_database_schema; get_table_info; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""ccsr.long_condition_category""}; execute_query: {""sql_query"": ""SELECT ccsr_category_description AS Category, body_system AS Body_System, COUNT(*) AS Visit_Count FROM ccsr.long_condition_category GROUP BY ccsr_category_description, body_system ORDER BY Visit_Count DESC""}","Here's the count of Emergency Department (ED) visits broken down by CCSR Category and Body System:
+
+1. **Essential hypertension** - Diseases of the circulatory system: 14,663 visits
+2. **Disorders of lipid metabolism** - Endocrine, nutritional, and metabolic diseases: 13,978 visits
+3. **Abnormal findings without diagnosis** - Symptoms, signs and abnormal clinical and laboratory findings, not elsewhere classified: 7,775 visits
+4. **Diabetes mellitus, Type 2** - Endocrine, nutritional, and metabolic diseases: 6,383 visits
+5. **Spondylopathies/spondyloarthropathy** - Diseases of the musculoskeletal system and connective tissue: 6,356 visits
+6. **Coronary atherosclerosis and other heart disease** - Diseases of the circulatory system: 6,063 visits
+7. **Other specified status** - Factors influencing health status and contact with health services: 6,043 visits
+8. **Thyroid disorders** - Endocrine, nutritional, and metabolic diseases: 5,896 visits
+9. **Musculoskeletal pain, not low back pain** - Diseases of the musculoskeletal system and connective tissue: 5,609 visits
+10. **Respiratory signs and symptoms** - Symptoms, signs and abnormal clinical and laboratory findings, not elsewhere classified: 4,311 visits
+
+These categories give a sense of the common conditions and body systems involved in ED visits, ranging widely from chronic conditions to acute symptoms and indications, manifesting the diverse reasons for such hospital visits.",39.789
+What is the average CMS-HCC Risk Score by Patient Location?,benchmarks/evals/tuva_project_demo/golden_query/average_cms_hcc_risk_scores_by_patient_location.sql,"""[""""cms_hcc.patient_risk_scores"""",""""core.patient""""]""",gpt-4-turbo,chatcmpl-Cv5MG7oMXMYLqzS6FCfY3NpvogmPD,get_database_schema; get_table_info; get_table_info; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""cms_hcc.patient_risk_scores""}; get_table_info: {""table_name"": ""core.location""}; execute_query: {""sql_query"": ""SELECT core.location.city, AVG(cms_hcc.patient_risk_scores.payment_risk_score) AS average_risk_score\nFROM cms_hcc.patient_risk_scores\nJOIN core.location ON cms_hcc.patient_risk_scores.person_id = core.location.location_id\nGROUP BY core.location.city""}","The attempt to calculate the average CMS-HCC Risk Score by Patient Location resulted in no data, which suggests there might be misalignment or issue in joining the tables based on the current keys. To resolve this, it's necessary to verify the join condition or explore an alternative approach. Would you like assistance in exploring another method of linkage or further inspection of the relevant data schemas?",25.402
+What is the overall readmission rate?,benchmarks/evals/tuva_project_demo/golden_query/overall_readmission_rate.sql,readmissions.readmission_summary,gpt-4-turbo,chatcmpl-Cv5MbnMrFy5AFlumCbd73bkoOcccs,get_database_schema; get_table_info; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""readmissions.readmission_summary""}; execute_query: {""sql_query"": ""SELECT AVG(readmit_30_flag) AS overall_readmission_rate FROM readmissions.readmission_summary""}",The overall readmission rate within 30 days is approximately 5.05%.,20.65
+What is the healthcare quality measure performance? Provide a breakdown by performance rate,benchmarks/evals/tuva_project_demo/golden_query/quality_measures_performance.sql,quality_measures.summary_counts,gpt-4-turbo,chatcmpl-Cv5MsvUoFKkAmBbtIS8PkWloI7CJ8,get_database_schema; get_table_info; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""ahrq_measures.pqi_rate""}; execute_query: {""sql_query"": ""SELECT pqi_number, rate_per_100_thousand, COUNT(*) AS cases_count FROM ahrq_measures.pqi_rate GROUP BY pqi_number, rate_per_100_thousand ORDER BY pqi_number""}","The healthcare quality measure performance, broken down by PQI (Preventive Quality Indicators) number and performance rate per 100 thousand, is outlined as follows:
+
+| PQI Number | Rate per 100,000 | Cases Count |
+|------------|------------------|-------------|
+| 01         | 0.000000         | 3           |
+| 03         | 0.000000         | 3           |
+| 05         | 208.550574       | 1           |
+| 05         | 305.188199       | 1           |
+| 05         | 108.225108       | 1           |
+| 07         | 100.100100       | 1           |
+| 07         | 106.157113       | 1           |
+| 07         | 0.000000         | 1           |
+| 08         | 718.685832       | 1           |
+| 08         | 0.000000         | 1           |
+| 08         | 200.200200       | 1           |
+| 11         | 0.000000         | 1           |
+| 11         | 100.100100       | 1           |
+| 11         | 102.669405       | 1           |
+| 12         | 616.016427       | 1           |
+| 12         | 424.628450       | 1           |
+| 12         | 200.200200       | 1           |
+| 14         | 102.669405       | 1           |
+| 14         | 0.000000         | 2           |
+| 15         | 0.000000         | 3           |
+| 16         | 0.000000         | 3           |
+
+This table illustrates the performance rates for different PQI numbers, highlighting the variances in preventive care outcomes across various metrics.",32.736
+"What is the distribution of chronic conditions? I want a breakdown of how many patients have 0 chronic conditions, how many patients have 1 chronic condition, how many patients have 2 chronic conditions, etc.",benchmarks/evals/tuva_project_demo/golden_query/distribution_of_chronic_conditions.sql,"""[""""chronic_conditions.tuva_chronic_conditions_long"""",""""core.patient""""]""",gpt-4-turbo,chatcmpl-Cv5NWXmTyB4IbICv5PjH0bcnDJ75M,get_database_schema; get_table_info; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""chronic_conditions.cms_chronic_conditions_long""}; execute_query: {""sql_query"": ""SELECT COUNT(DISTINCT person_id) as patient_count, COUNT(condition) - COUNT(DISTINCT person_id) as chronic_conditions_count FROM chronic_conditions.cms_chronic_conditions_long GROUP BY person_id ORDER BY chronic_conditions_count""}","The distribution of chronic conditions among patients is as follows:
+
+- **0 chronic conditions:** Several patients (each repeated in different rows, showing data extraction limitations rather than actual count)
+- **1 chronic condition:** Multiple patients
+- **2 chronic conditions:** Fewer patients
+
+Each of the 931 rows represents a unique patient entry indicating their count of chronic conditions beyond the baseline, which is adjusted in the data query by counting the conditions and subtracting 1 for cases with at least one condition recorded. The query output consistently shows 1 patient per row due to grouping mechanics, with varying counts of chronic conditions as explained.
+
+If you need more precise or further grouped statistics, please let me know how you would like the analysis adjusted!",29.081
+What is the total medicaid spend broken down by member months?,benchmarks/evals/tuva_project_demo/golden_query/medicaid_spend_by_member_months.sql,financial_pmpm.pmpm_prep,gpt-4-turbo,chatcmpl-Cv5OWi776yueXzCNbDPE0jdOTbvkY,get_database_schema; get_table_info; get_table_info; execute_query; execute_query; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""core.member_months""}; get_table_info: {""table_name"": ""core.medical_claim""}; execute_query: {""sql_query"": ""SELECT year_month, SUM(paid_amount) AS total_medicaid_spend \nFROM core.medical_claim \nJOIN core.member_months ON core.medical_claim.member_month_key = core.member_months.member_month_key \nWHERE payer = 'medicaid' \nGROUP BY year_month\nORDER BY year_month""}; execute_query: {""sql_query"": ""SELECT year_month, SUM(paid_amount) AS total_medicaid_spend \nFROM core.medical_claim \nJOIN core.member_months ON core.medical_claim.member_id = core.member_months.member_id \nWHERE payer = 'medicaid' \nGROUP BY year_month\nORDER BY year_month""}; execute_query: {""sql_query"": ""SELECT year_month, SUM(medical_claim.paid_amount) AS total_medicaid_spend \nFROM core.medical_claim \nJOIN core.member_months ON core.medical_claim.member_id = core.member_months.member_id \nWHERE medical_claim.payer = 'medicaid' \nGROUP BY year_month\nORDER BY year_month""}","The query execution did not find any results. This could be due to several reasons such as there being no Medicaid transactions in the data available or issues with the constraints used in the query filtering by member IDs or payer information.
+
+If you need further analysis or if there is another specific dataset or request you have in mind within this data, please let me know, and we can refine our approach or check a different aspect of the data.",61.605
+"For quality measures, can you give me a breakdown of exclusion reasons and the count by measure?",benchmarks/evals/tuva_project_demo/golden_query/exclusion_reason_breakdown.sql,quality_measures.summary_long,gpt-4-turbo,chatcmpl-Cv5OuHMkkBdJWQxASHlw90ka5vM9G,get_database_schema; get_table_info; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""ahrq_measures.pqi_exclusion_long""}; execute_query: {""sql_query"": ""SELECT exclusion_reason, COUNT(*) AS exclusion_count FROM ahrq_measures.pqi_exclusion_long GROUP BY exclusion_reason ORDER BY exclusion_count DESC""}","The breakdown of exclusion reasons along with their counts for quality measures is as follows:
+
+- **Missing primary diagnosis**: 2,270 exclusions
+- **Transfer**: 230 exclusions
+
+These counts reflect the number of times a particular exclusion reason was cited in the dataset.",19.086
+What is the 30-day readmission rate by MS-DRG? Give me the MS-DRG description as well,benchmarks/evals/tuva_project_demo/golden_query/readmission_rate_by_ms_drg.sql,"""[""""readmissions.readmission_summary"""",""""terminology.ms_drg""""]""",gpt-4-turbo,chatcmpl-Cv5PPXcrxNN2yM6CTAIAtckHHYFu6,get_database_schema; get_table_info; get_table_info; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""terminology.ms_drg""}; get_table_info: {""table_name"": ""readmissions.readmission_summary""}; execute_query: {""sql_query"": ""SELECT r.drg_code, t.ms_drg_description, AVG(r.readmit_30_flag * 1.0) AS readmission_rate\nFROM readmissions.readmission_summary r\nJOIN terminology.ms_drg t ON r.drg_code = t.ms_drg_code\nGROUP BY r.drg_code, t.ms_drg_description\nORDER BY readmission_rate DESC""}","The following table shows the 30-day readmission rates by MS-DRG (Medicare Severity Diagnosis Related Group) along with the descriptions of each MS-DRG. These results highlight the MS-DRGs with the highest readmission rates:
+
+| DRG Code | MS-DRG Description                                                                                                   | Readmission Rate |
+|----------|----------------------------------------------------------------------------------------------------------------------|------------------|
+| 639      | Diabetes without CC/MCC                                                                                             | 1.000            |
+| 193      | Simple Pneumonia and Pleurisy with MCC                                                                              | 1.000            |
+| 813      | Coagulation Disorders                                                                                               | 1.000            |
+| 690      | Kidney and Urinary Tract Infections without MCC                                                                     | 0.500            |
+| 871      | Septicemia or Severe Sepsis without MV >96 Hours with MCC                                                           | 0.400            |
+| 460      | SPINAL FUSION EXCEPT CERVICAL WITHOUT MCC                                                                           | 0.250            |
+| 190      | Chronic Obstructive Pulmonary Disease with MCC                                                                      | 0.200            |
+| 689      | Kidney and Urinary Tract Infections with MCC                                                                        | 0.167            |
+| 392      | Esophagitis, Gastroenteritis and Miscellaneous Digestive Disorders without MCC                                       | 0.167            |
+| Several others with readmission rates ranging from 0.167 to 0.000.                                                                                        |
+
+This table specifically focuses on the top results and there are many more MS-DRGs in the full result set. Note that a readmission rate of 1.000 indicates a 100% 30-day readmission rate for those particular DRG categories, highlighting significant areas for healthcare interventions to reduce readmissions.",58.548

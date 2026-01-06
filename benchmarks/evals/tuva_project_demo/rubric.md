@@ -1,6 +1,6 @@
 # Evaluation Rubric
 
-## [Model Name]
+## qwen2.5:7b-ctx32k
 
 **Query:**
 
@@ -9,7 +9,7 @@
 | Pass or Fail Response          |       |
 | Percent Correct Tables Queried |       |
 | Number of Tools Invoked        |       |
-| Getting there? (Y/N)           |       |
+| Partial Credit? (Y/N)          |       |
 
 **Query:**
 
@@ -18,4 +18,4 @@
 | Pass or Fail Response          |       |
 | Percent Correct Tables Queried |       |
 | Number of Tools Invoked        |       |
-| Getting there? (Y/N)           |       |
+| Partial Credit? (Y/N)          |       |
