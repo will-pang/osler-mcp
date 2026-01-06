@@ -66,7 +66,7 @@ def model_response_to_csv(responses: list[ModelResponse], csv_path: str, output_
             row["tool_calls"] = response.tool_names
             row["tool_arguments"] = response.tool_arguments
             row["response_text"] = response.response_text
-            row["total_runtimey_s"] = response.total_runtime_ms / 1000
+            row["total_runtime_s"] = response.total_runtime_ms / 1000
 
             writer.writerow(row)
 
