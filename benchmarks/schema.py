@@ -35,7 +35,7 @@ class ModelResponse:
     query: str
     response_text: str
     tool_calls: list[ToolCallEvent]
-    total_latency_ms: int
+    total_runtime_ms: int
     error: str | None = None
 
     @property
