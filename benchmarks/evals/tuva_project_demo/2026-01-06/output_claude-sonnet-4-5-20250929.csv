@@ -1,0 +1,451 @@
+Query,Golden Query Relative Path,Golden Table,model,session_id,tool_calls,tool_arguments,response_text,total_runtime_s
+What is the prevalence of Tuva Chronic Conditions? Give me a breakout by condition,benchmarks/evals/tuva_project_demo/golden_query/prevalence_tuva_chronic_conditions.sql,chronic_conditions.tuva_chronic_conditions_long,claude-sonnet-4-5-20250929,msg_01MpsVw4qhtuhVqcAYjZ1kDU,get_database_schema; get_table_info; execute_query; execute_query; execute_query; execute_query; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""chronic_conditions.tuva_chronic_conditions_long""}; execute_query: {""sql_query"": ""\nSELECT \n    condition,\n    COUNT(DISTINCT person_id) as patient_count,\n    ROUND(COUNT(DISTINCT person_id) * 100.0 / (SELECT COUNT(DISTINCT person_id) FROM chronic_conditions.tuva_chronic_conditions_long), 2) as prevalence_pct\nFROM chronic_conditions.tuva_chronic_conditions_long\nGROUP BY condition\nORDER BY patient_count DESC\n""}; execute_query: {""sql_query"": ""\n-- Get summary statistics\nWITH total_patients AS (\n    SELECT COUNT(DISTINCT person_id) as total\n    FROM chronic_conditions.tuva_chronic_conditions_long\n),\ncondition_stats AS (\n    SELECT \n        condition,\n        COUNT(DISTINCT person_id) as patient_count,\n        ROUND(COUNT(DISTINCT person_id) * 100.0 / (SELECT total FROM total_patients), 2) as prevalence_pct\n    FROM chronic_conditions.tuva_chronic_conditions_long\n    GROUP BY condition\n)\nSELECT \n    'Total Unique Patients' as metric,\n    (SELECT total FROM total_patients)::VARCHAR as value\nUNION ALL\nSELECT \n    'Total Conditions Tracked',\n    COUNT(DISTINCT condition)::VARCHAR\nFROM chronic_conditions.tuva_chronic_conditions_long\nUNION ALL\nSELECT \n    'Average Conditions per Patient',\n    ROUND(COUNT(*)::NUMERIC / (SELECT total FROM total_patients), 2)::VARCHAR\nFROM chronic_conditions.tuva_chronic_conditions_long\nUNION ALL\nSELECT\n    'Most Common Condition',\n    (SELECT condition FROM condition_stats ORDER BY patient_count DESC LIMIT 1)\nUNION ALL\nSELECT\n    'Highest Prevalence Rate',\n    (SELECT ROUND(MAX(prevalence_pct), 2)::VARCHAR || '%' FROM condition_stats)\n""}; execute_query: {""sql_query"": ""\nSELECT \n    condition,\n    COUNT(DISTINCT person_id) as patient_count,\n    ROUND(COUNT(DISTINCT person_id) * 100.0 / (SELECT COUNT(DISTINCT person_id) FROM chronic_conditions.tuva_chronic_conditions_long), 2) as prevalence_pct\nFROM chronic_conditions.tuva_chronic_conditions_long\nGROUP BY condition\nORDER BY patient_count DESC\n""}; execute_query: {""sql_query"": ""\nSELECT \n    ROW_NUMBER() OVER (ORDER BY COUNT(DISTINCT person_id) DESC) as rank,\n    condition,\n    COUNT(DISTINCT person_id) as patient_count,\n    ROUND(COUNT(DISTINCT person_id) * 100.0 / (SELECT COUNT(DISTINCT person_id) FROM chronic_conditions.tuva_chronic_conditions_long), 2) as prevalence_pct\nFROM chronic_conditions.tuva_chronic_conditions_long\nGROUP BY condition\nORDER BY patient_count DESC\nLIMIT 100\n""}; execute_query: {""sql_query"": ""\nWITH ranked_conditions AS (\n    SELECT \n        condition,\n        COUNT(DISTINCT person_id) as patient_count,\n        ROUND(COUNT(DISTINCT person_id) * 100.0 / (SELECT COUNT(DISTINCT person_id) FROM chronic_conditions.tuva_chronic_conditions_long), 2) as prevalence_pct\n    FROM chronic_conditions.tuva_chronic_conditions_long\n    GROUP BY condition\n)\nSELECT \n    condition,\n    patient_count,\n    prevalence_pct\nFROM ranked_conditions\nWHERE patient_count < 22\nORDER BY patient_count DESC, condition\n""}","Perfect! Now I have a complete picture. Let me create a comprehensive summary for you:
+
+## Prevalence of Tuva Chronic Conditions - Complete Breakdown
+
+### **Summary Statistics**
+- **Total Unique Patients**: 927
+- **Total Conditions Tracked**: 87
+- **Average Conditions per Patient**: 12.19
+- **Most Common Condition**: Dyslipidemias (91.48%)
+
+---
+
+### **Complete Prevalence Breakdown by Condition**
+
+#### **Very High Prevalence (>60%)**
+1. **Dyslipidemias** - 848 patients (91.48%)
+2. **Hypertension** - 845 patients (91.15%)
+3. **Osteoarthritis** - 589 patients (63.54%)
+4. **Gastroesophageal Reflux** - 583 patients (62.89%)
+5. **Atherosclerosis** - 573 patients (61.81%)
+
+#### **High Prevalence (40-60%)**
+6. **Cardiac Dysrhythmias** - 559 patients (60.30%)
+7. **Cataract** - 530 patients (57.17%)
+8. **Obesity** - 473 patients (51.02%)
+9. **Diabetes mellitus** - 448 patients (48.33%)
+10. **Anxiety Disorders** - 431 patients (46.49%)
+11. **Type 2 Diabetes Mellitus** - 428 patients (46.17%)
+
+#### **Moderate Prevalence (20-40%)**
+12. **Major Depressive Disorder** - 364 patients (39.27%)
+13. **Chronic Kidney Disease** - 357 patients (38.51%)
+14. **Benign Prostatic Hyperplasia** - 356 patients (38.40%)
+15. **Osteoporosis** - 316 patients (34.09%)
+16. **Chronic Obstructive Pulmonary Disease** - 304 patients (32.79%)
+17. **Atrial Fibrillation** - 271 patients (29.23%)
+18. **Asthma** - 269 patients (29.02%)
+19. **Glaucoma** - 247 patients (26.65%)
+20. **Heart Failure** - 239 patients (25.78%)
+21. **Abdominal Hernia** - 201 patients (21.68%)
+
+#### **Low to Moderate Prevalence (10-20%)**
+22. **Dementia** - 174 patients (18.77%)
+23. **Myocardial Infarction** - 171 patients (18.45%)
+24. **Stroke** - 142 patients (15.32%)
+25. **Breast Cancer** - 131 patients (14.13%)
+26. **Erectile Dysfunction** - 123 patients (13.27%)
+27. **Rheumatoid Arthritis** - 112 patients (12.08%)
+
+#### **Low Prevalence (5-10%)**
+28. **Tobacco Use** - 80 patients (8.63%)
+29. **Bipolar Affective Disorder** - 74 patients (7.98%)
+30. **Abdominal Aortic Aneurysm** - 71 patients (7.66%)
+31. **Alzheimer Disease** - 68 patients (7.34%)
+32. **Type 1 Diabetes Mellitus** - 58 patients (6.26%)
+33. **Epilepsy and Seizure Disorders** - 57 patients (6.15%)
+
+#### **Very Low Prevalence (2-5%)**
+34. **Opioid Use Disorder** - 45 patients (4.85%)
+35. **Pulmonary Embolism, Thrombotic or Unspecified** - 44 patients (4.75%)
+36. **Parkinson's Disease** - 43 patients (4.64%)
+37. **Alcohol Use Disorder** - 41 patients (4.42%)
+38. **Ulcerative colitis** - 34 patients (3.67%)
+39. **Deep Vein Thrombosis of Extremities or Central Veins** - 33 patients (3.56%)
+40. **Herpes Simplex Infection** - 33 patients (3.56%)
+41. **Lung cancer, primary or unspecified** - 32 patients (3.45%)
+42. **Diverticulitis of Large Intestine** - 31 patients (3.34%)
+43. **Hip Fracture** - 30 patients (3.24%)
+44. **Systemic Lupus Erythematosus** - 30 patients (3.24%)
+45. **Hepatitis C Infection, Chronic** - 29 patients (3.13%)
+46. **Endocarditis** - 29 patients (3.13%)
+47. **Multiple Sclerosis** - 27 patients (2.91%)
+48. **Post-Traumatic Stress Disorder** - 24 patients (2.59%)
+49. **Chrohn's Disease** - 23 patients (2.48%)
+50. **Colorectal Cancer** - 22 patients (2.37%)
+51. **Attention Deficit-Hyperactivity Disorder** - 21 patients (2.27%)
+52. **Schizophrenia** - 20 patients (2.16%)
+
+#### **Rare Conditions (<2%)**
+53. **Clostridioides difficile Enterocolitis** - 18 patients (1.94%)
+54. **Hepatitis B Infection** - 17 patients (1.83%)
+55. **Lyme Disease** - 17 patients (1.83%)
+56. **HIV Infection** - 16 patients (1.73%)
+57. **HIV/AIDS (HCC v28 concept #1)** - 16 patients (1.73%)
+58. **Appendicitis** - 13 patients (1.40%)
+59. **Celiac Disease** - 13 patients (1.40%)
+60. **Chronic Lymphocytic Leukemia** - 12 patients (1.29%)
+61. **Endometrial Cancer** - 11 patients (1.19%)
+62. **Helicobacter pylori Infection** - 11 patients (1.19%)
+63. **Hepatitis B Infection, Chronic** - 11 patients (1.19%)
+64. **Cervical Cancer** - 9 patients (0.97%)
+65. **Chronic Pancreatitis** - 8 patients (0.86%)
+66. **Cerebral Palsy** - 6 patients (0.65%)
+67. **Multiple Myeloma** - 6 patients (0.65%)
+68. **Obsessive-Compulsive Disorder** - 6 patients (0.65%)
+69. **Hepatitis C Infection, Acute** - 4 patients (0.43%)
+70. **Specified Immunodeficiencies and White Blood Cell Disorders (HCC v28 concept #115)** - 4 patients (0.43%)
+71. **Common Variable and Combined Immunodeficiencies (HCC v28 concept #114)** - 3 patients (0.32%)
+72. **Cystic Fibrosis** - 2 patients (0.22%)
+73. **Cytomegalovirus Infection** - 2 patients (0.22%)
+74. **Personality Disorders** - 2 patients (0.22%)
+75. **Respiratory Syncytial Virus Infection** - 2 patients (0.22%)
+
+#### **Ultra-Rare Conditions (<0.2%)**
+76-87. The following conditions each affect only 1 patient (0.11%):
+- Babesiosis
+- Campylobacteriosis
+- Chlamydia Trachomatis or Unspecified Chlamydial Infection
+- Cocaine Use Disorder
+- Coccidioidomycosis
+- Dexamethasone, Systemic
+- Ehrlichiosis
+- Hepatitis A Infection
+- Hepatitis B Infection, Acute
+- Invasive Pneumococcal Disease
+- Muscular Dystrophy
+- Rickettsiosis
+
+---
+
+### **Key Insights**
+- Cardiovascular conditions dominate the top conditions (Dyslipidemias, Hypertension, Atherosclerosis, Cardiac Dysrhythmias)
+- Metabolic conditions are highly prevalent (Diabetes, Obesity, Dyslipidemias)
+- Mental health conditions affect a significant portion of the population (Anxiety Disorders 46%, Major Depressive Disorder 39%)
+- The patient population appears to be predominantly older adults based on condition profiles (cataracts, osteoporosis, benign prostatic hyperplasia)",61.217
+What is the count of ED visits by CCSR Category and Body System?,benchmarks/evals/tuva_project_demo/golden_query/count_of_ed_visits_by_ccsr.sql,"""[""""core.encounter"""",""""ccsr.long_condition_category""""]""",claude-sonnet-4-5-20250929,msg_01BEnX9oSpuPxExpUaX735RA,get_database_schema; get_table_info; get_table_info; get_table_info; execute_query; execute_query; execute_query; execute_query; execute_query; execute_query; execute_query; execute_query; get_table_info; execute_query; execute_query; execute_query; get_table_info; execute_query; execute_query; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""ccsr.long_condition_category""}; get_table_info: {""table_name"": ""ed_classification.summary""}; get_table_info: {""table_name"": ""core.encounter""}; execute_query: {""sql_query"": ""\nSELECT \n    ccsr.ccsr_category,\n    ccsr.ccsr_category_description,\n    ccsr.body_system,\n    COUNT(DISTINCT ed.encounter_id) as ed_visit_count\nFROM ed_classification.summary ed\nINNER JOIN ccsr.long_condition_category ccsr\n    ON ed.encounter_id = ccsr.encounter_id\nGROUP BY \n    ccsr.ccsr_category,\n    ccsr.ccsr_category_description,\n    ccsr.body_system\nORDER BY \n    ed_visit_count DESC,\n    ccsr.body_system,\n    ccsr.ccsr_category\n""}; execute_query: {""sql_query"": ""\nSELECT \n    ccsr.ccsr_category,\n    ccsr.ccsr_category_description,\n    ccsr.body_system,\n    COUNT(DISTINCT enc.encounter_id) as ed_visit_count\nFROM core.encounter enc\nINNER JOIN ccsr.long_condition_category ccsr\n    ON enc.encounter_id = ccsr.encounter_id\nWHERE enc.ed_flag = 1\nGROUP BY \n    ccsr.ccsr_category,\n    ccsr.ccsr_category_description,\n    ccsr.body_system\nORDER BY \n    ed_visit_count DESC,\n    ccsr.body_system,\n    ccsr.ccsr_category\n""}; execute_query: {""sql_query"": ""\nSELECT COUNT(*) as ed_count FROM ed_classification.summary\n""}; execute_query: {""sql_query"": ""\nSELECT COUNT(*) as ccsr_count FROM ccsr.long_condition_category\n""}; execute_query: {""sql_query"": ""\nSELECT COUNT(*) as ed_encounter_count \nFROM core.encounter \nWHERE ed_flag = 1\n""}; execute_query: {""sql_query"": ""\nSELECT \n    COUNT(DISTINCT ed.encounter_id) as total_ed_encounters,\n    COUNT(DISTINCT ccsr.encounter_id) as ed_with_ccsr,\n    COUNT(DISTINCT CASE WHEN ccsr.encounter_id IS NOT NULL THEN ed.encounter_id END) as matching_encounters\nFROM ed_classification.summary ed\nLEFT JOIN ccsr.long_condition_category ccsr\n    ON ed.encounter_id = ccsr.encounter_id\n""}; execute_query: {""sql_query"": ""\nSELECT \n    COUNT(*) as total_rows,\n    COUNT(DISTINCT encounter_id) as distinct_encounters,\n    COUNT(DISTINCT claim_id) as distinct_claims,\n    COUNT(DISTINCT person_id) as distinct_persons\nFROM ccsr.long_condition_category\nWHERE encounter_id IS NOT NULL\n""}; execute_query: {""sql_query"": ""\nSELECT \n    COUNT(*) as total_rows,\n    COUNT(claim_id) as claim_id_count,\n    COUNT(person_id) as person_id_count\nFROM ccsr.long_condition_category\nLIMIT 5\n""}; get_table_info: {""table_name"": ""core.condition""}; execute_query: {""sql_query"": ""\nSELECT \n    ccsr.ccsr_category,\n    ccsr.ccsr_category_description,\n    ccsr.body_system,\n    COUNT(DISTINCT cond.encounter_id) as ed_visit_count\nFROM core.condition cond\nINNER JOIN ccsr.long_condition_category ccsr\n    ON cond.claim_id = ccsr.claim_id\n    AND cond.normalized_code = ccsr.normalized_code\nINNER JOIN core.encounter enc\n    ON cond.encounter_id = enc.encounter_id\nWHERE enc.encounter_type = 'emergency department'\nGROUP BY \n    ccsr.ccsr_category,\n    ccsr.ccsr_category_description,\n    ccsr.body_system\nORDER BY \n    ed_visit_count DESC,\n    ccsr.body_system,\n    ccsr.ccsr_category\n""}; execute_query: {""sql_query"": ""\nSELECT DISTINCT encounter_type, COUNT(*) as count\nFROM core.encounter\nGROUP BY encounter_type\nORDER BY count DESC\n""}; execute_query: {""sql_query"": ""\nSELECT \n    COUNT(DISTINCT cond.encounter_id) as ed_encounters_with_conditions,\n    COUNT(DISTINCT cond.claim_id) as ed_claims_in_conditions\nFROM core.condition cond\nINNER JOIN core.encounter enc\n    ON cond.encounter_id = enc.encounter_id\nWHERE enc.encounter_type = 'emergency department'\n""}; get_table_info: {""table_name"": ""core.medical_claim""}; execute_query: {""sql_query"": ""\nSELECT \n    ccsr.ccsr_category,\n    ccsr.ccsr_category_description,\n    ccsr.body_system,\n    COUNT(DISTINCT mc.encounter_id) as ed_visit_count\nFROM core.medical_claim mc\nINNER JOIN ccsr.long_condition_category ccsr\n    ON mc.claim_id = ccsr.claim_id\n    AND mc.person_id = ccsr.person_id\nWHERE mc.encounter_type = 'emergency department'\nGROUP BY \n    ccsr.ccsr_category,\n    ccsr.ccsr_category_description,\n    ccsr.body_system\nORDER BY \n    ed_visit_count DESC,\n    ccsr.body_system,\n    ccsr.ccsr_category\nLIMIT 20\n""}; execute_query: {""sql_query"": ""\nSELECT \n    ccsr.ccsr_category,\n    ccsr.ccsr_category_description,\n    ccsr.body_system,\n    COUNT(DISTINCT mc.encounter_id) as ed_visit_count\nFROM core.medical_claim mc\nINNER JOIN ccsr.long_condition_category ccsr\n    ON mc.claim_id = ccsr.claim_id\n    AND mc.person_id = ccsr.person_id\nWHERE mc.encounter_type = 'emergency department'\nGROUP BY \n    ccsr.ccsr_category,\n    ccsr.ccsr_category_description,\n    ccsr.body_system\nORDER BY \n    ed_visit_count DESC,\n    ccsr.body_system,\n    ccsr.ccsr_category\n""}; execute_query: {""sql_query"": ""\nSELECT \n    ccsr.body_system,\n    COUNT(DISTINCT mc.encounter_id) as ed_visit_count,\n    COUNT(DISTINCT ccsr.ccsr_category) as unique_ccsr_categories\nFROM core.medical_claim mc\nINNER JOIN ccsr.long_condition_category ccsr\n    ON mc.claim_id = ccsr.claim_id\n    AND mc.person_id = ccsr.person_id\nWHERE mc.encounter_type = 'emergency department'\nGROUP BY \n    ccsr.body_system\nORDER BY \n    ed_visit_count DESC\n""}","Excellent! I now have both summary views. Let me provide you with a comprehensive summary of the results:
+
+## Summary: ED Visits by CCSR Category and Body System
+
+I've successfully analyzed the emergency department visits by CCSR (Clinical Classifications Software Refined) Category and Body System. Here are the key findings:
+
+### **By Body System (Top 10)**
+
+1. **Symptoms, signs and abnormal clinical findings** - 989 ED visits (16 unique categories)
+2. **Diseases of the circulatory system** - 832 ED visits (31 unique categories)
+3. **Factors influencing health status** - 506 ED visits (13 unique categories)
+4. **Diseases of the musculoskeletal system** - 386 ED visits (20 unique categories)
+5. **Endocrine, nutritional, and metabolic diseases** - 371 ED visits (13 unique categories)
+6. **Diseases of the digestive system** - 289 ED visits (23 unique categories)
+7. **Diseases of the nervous system** - 288 ED visits (15 unique categories)
+8. **Diseases of the respiratory system** - 275 ED visits (16 unique categories)
+9. **Injury, poisoning and external causes** - 274 ED visits (27 unique categories)
+10. **Diseases of the genitourinary system** - 270 ED visits (17 unique categories)
+
+### **By CCSR Category (Top 20)**
+
+1. **CIR007 - Essential hypertension** - 415 ED visits
+2. **CIR012 - Nonspecific chest pain** - 409 ED visits
+3. **SYM013 - Respiratory signs and symptoms** - 344 ED visits
+4. **FAC025 - Other specified status** - 337 ED visits
+5. **SYM006 - Abdominal pain and digestive symptoms** - 277 ED visits
+6. **SYM017 - Abnormal findings without diagnosis** - 276 ED visits
+7. **SYM010 - Nervous system signs and symptoms** - 258 ED visits
+8. **MUS010 - Musculoskeletal pain (not low back)** - 220 ED visits
+9. **INJ027 - Other unspecified injury** - 184 ED visits
+10. **END010 - Disorders of lipid metabolism** - 178 ED visits
+
+The data shows **270 unique CCSR categories** across **20 different body systems** associated with ED visits. The most common reasons for ED visits include cardiovascular symptoms (chest pain, hypertension), general symptoms (respiratory symptoms, abdominal pain), and musculoskeletal complaints.",117.612
+What is the average CMS-HCC Risk Score by Patient Location?,benchmarks/evals/tuva_project_demo/golden_query/average_cms_hcc_risk_scores_by_patient_location.sql,"""[""""cms_hcc.patient_risk_scores"""",""""core.patient""""]""",claude-sonnet-4-5-20250929,msg_0199ubw7ASJUUAmya3HCpjDv,get_database_schema; get_table_info; get_table_info; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""cms_hcc.patient_risk_scores""}; get_table_info: {""table_name"": ""core.patient""}; execute_query: {""sql_query"": ""\nSELECT \n    p.state AS patient_location,\n    COUNT(DISTINCT r.person_id) AS patient_count,\n    ROUND(AVG(r.payment_risk_score), 3) AS avg_cms_hcc_risk_score,\n    ROUND(MIN(r.payment_risk_score), 3) AS min_risk_score,\n    ROUND(MAX(r.payment_risk_score), 3) AS max_risk_score\nFROM cms_hcc.patient_risk_scores r\nINNER JOIN core.patient p \n    ON r.person_id = p.person_id\nWHERE p.state IS NOT NULL\n    AND r.payment_risk_score IS NOT NULL\nGROUP BY p.state\nORDER BY avg_cms_hcc_risk_score DESC\n""}","Excellent! I've successfully retrieved the average CMS-HCC Risk Score by Patient Location (State). Here are the key findings:
+
+## **Average CMS-HCC Risk Score by Patient Location (State)**
+
+### **Top 5 States with Highest Risk Scores:**
+1. **North Dakota**: 0.780 (1 patient)
+2. **South Dakota**: 0.613 (3 patients)
+3. **Puerto Rico**: 0.588 (5 patients)
+4. **Arkansas**: 0.518 (9 patients)
+5. **Massachusetts**: 0.483 (22 patients)
+
+### **Top 5 States with Lowest Risk Scores:**
+1. **Kansas**: 0.236 (5 patients)
+2. **Hawaii**: 0.266 (1 patient)
+3. **New Mexico**: 0.313 (6 patients)
+4. **Rhode Island**: 0.324 (6 patients)
+5. **Vermont**: 0.332 (2 patients)
+
+### **States with Largest Patient Populations:**
+- **California**: 0.449 average (97 patients)
+- **Florida**: 0.435 average (77 patients)
+- **Texas**: 0.440 average (66 patients)
+- **Ohio**: 0.455 average (51 patients)
+- **New York**: 0.433 average (49 patients)
+
+### **Key Insights:**
+- The overall average CMS-HCC risk scores range from **0.236 to 0.780** across states
+- There's significant geographic variation in risk scores
+- Some states with smaller sample sizes show higher variability (as shown in the min/max range)
+- Larger population states like California, Florida, and Texas show risk scores around **0.44-0.45**
+
+The analysis includes minimum and maximum risk scores to show the range of risk within each state, helping identify geographic areas that may need targeted care management interventions.",28.922
+What is the overall readmission rate?,benchmarks/evals/tuva_project_demo/golden_query/overall_readmission_rate.sql,readmissions.readmission_summary,claude-sonnet-4-5-20250929,msg_01D3LuHBXZQG5YhXF6fz3vpR,get_database_schema; get_table_info; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""readmissions.readmission_summary""}; execute_query: {""sql_query"": ""\nSELECT \n    COUNT(DISTINCT encounter_id) as total_index_admissions,\n    SUM(unplanned_readmit_30_flag) as unplanned_30_day_readmissions,\n    ROUND(100.0 * SUM(unplanned_readmit_30_flag) / COUNT(DISTINCT encounter_id), 2) as readmission_rate_percent\nFROM readmissions.readmission_summary\nWHERE index_admission_flag = 1\n""}","## Overall Readmission Rate
+
+The **overall readmission rate is 5.35%**.
+
+### Key Metrics:
+- **Total Index Admissions**: 187
+- **Unplanned 30-Day Readmissions**: 10
+- **Readmission Rate**: 5.35%
+
+This means that out of 187 initial hospital admissions, 10 patients (5.35%) had an unplanned readmission within 30 days of discharge. This is a commonly tracked quality measure in healthcare, and the rate appears to be relatively low, which generally indicates good quality of care and discharge planning.",20.375
+What is the healthcare quality measure performance? Provide a breakdown by performance rate,benchmarks/evals/tuva_project_demo/golden_query/quality_measures_performance.sql,quality_measures.summary_counts,claude-sonnet-4-5-20250929,msg_01NcwKaXhAVnDVnBDAspGesv,get_database_schema; get_table_info; get_table_info; execute_query; execute_query; execute_query; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""quality_measures.summary_long""}; get_table_info: {""table_name"": ""quality_measures.summary_counts""}; execute_query: {""sql_query"": ""\nSELECT \n    measure_id,\n    measure_name,\n    measure_version,\n    performance_period_begin,\n    performance_period_end,\n    denominator_sum,\n    numerator_sum,\n    exclusion_sum,\n    performance_rate,\n    CASE \n        WHEN performance_rate >= 90 THEN 'Excellent (90-100%)'\n        WHEN performance_rate >= 75 THEN 'Good (75-89%)'\n        WHEN performance_rate >= 50 THEN 'Fair (50-74%)'\n        ELSE 'Needs Improvement (<50%)'\n    END AS performance_category\nFROM quality_measures.summary_counts\nORDER BY performance_rate DESC\n""}; execute_query: {""sql_query"": ""\nSELECT \n    CASE \n        WHEN performance_rate >= 90 THEN 'Excellent (90-100%)'\n        WHEN performance_rate >= 75 THEN 'Good (75-89%)'\n        WHEN performance_rate >= 50 THEN 'Fair (50-74%)'\n        ELSE 'Needs Improvement (<50%)'\n    END AS performance_category,\n    COUNT(*) as measure_count,\n    ROUND(AVG(performance_rate), 2) as avg_performance_rate,\n    ROUND(MIN(performance_rate), 2) as min_performance_rate,\n    ROUND(MAX(performance_rate), 2) as max_performance_rate,\n    SUM(denominator_sum) as total_denominator,\n    SUM(numerator_sum) as total_numerator,\n    SUM(exclusion_sum) as total_exclusions\nFROM quality_measures.summary_counts\nGROUP BY \n    CASE \n        WHEN performance_rate >= 90 THEN 'Excellent (90-100%)'\n        WHEN performance_rate >= 75 THEN 'Good (75-89%)'\n        WHEN performance_rate >= 50 THEN 'Fair (50-74%)'\n        ELSE 'Needs Improvement (<50%)'\n    END\nORDER BY avg_performance_rate DESC\n""}; execute_query: {""sql_query"": ""\nSELECT \n    measure_id,\n    measure_name,\n    denominator_sum as eligible_population,\n    numerator_sum as met_criteria,\n    exclusion_sum as exclusions,\n    (denominator_sum - exclusion_sum) as adjusted_denominator,\n    performance_rate,\n    ROUND((numerator_sum * 100.0 / NULLIF(denominator_sum - exclusion_sum, 0)), 2) as adjusted_performance_rate,\n    ROUND(((denominator_sum - numerator_sum - exclusion_sum) * 100.0 / NULLIF(denominator_sum - exclusion_sum, 0)), 2) as gap_percentage\nFROM quality_measures.summary_counts\nORDER BY performance_rate DESC\n""}; execute_query: {""sql_query"": ""\nSELECT \n    CASE \n        WHEN measure_id LIKE 'ADH%' THEN 'Medication Adherence'\n        WHEN measure_id LIKE 'CQM%' THEN 'Clinical Quality Measure'\n        WHEN measure_id LIKE 'NQF%' THEN 'NQF Quality Measure'\n        ELSE 'Other'\n    END AS measure_type,\n    COUNT(*) as measure_count,\n    ROUND(AVG(performance_rate), 2) as avg_performance_rate,\n    SUM(denominator_sum) as total_eligible,\n    SUM(numerator_sum) as total_met_criteria,\n    SUM(exclusion_sum) as total_exclusions,\n    ROUND((SUM(numerator_sum) * 100.0 / NULLIF(SUM(denominator_sum) - SUM(exclusion_sum), 0)), 2) as overall_rate\nFROM quality_measures.summary_counts\nGROUP BY \n    CASE \n        WHEN measure_id LIKE 'ADH%' THEN 'Medication Adherence'\n        WHEN measure_id LIKE 'CQM%' THEN 'Clinical Quality Measure'\n        WHEN measure_id LIKE 'NQF%' THEN 'NQF Quality Measure'\n        ELSE 'Other'\n    END\nORDER BY avg_performance_rate DESC\n""}","## Healthcare Quality Measure Performance Summary
+
+Based on the analysis of healthcare quality measures for the performance period **January 1, 2018 - December 31, 2018**, here's a comprehensive breakdown:
+
+---
+
+### **Overall Performance by Category**
+
+| Performance Category | # of Measures | Avg Performance Rate | Total Eligible | Total Met Criteria | Total Exclusions |
+|---------------------|---------------|---------------------|----------------|-------------------|------------------|
+| **Excellent (90-100%)** | 3 | 100.00% | 75 | 75 | 2 |
+| **Good (75-89%)** | 0 | - | - | - | - |
+| **Fair (50-74%)** | 0 | - | - | - | - |
+| **Needs Improvement (<50%)** | 4 | 28.36% | 2,427 | 551 | 68 |
+
+---
+
+### **Detailed Performance by Individual Measure**
+
+#### **🟢 Top Performers (100% Performance Rate)**
+
+1. **Medication Adherence for Hypertension (ADH-RAS)**
+   - Performance Rate: **100.0%**
+   - Eligible Population: 26
+   - Met Criteria: 26
+   - Gap to Close: 0 patients
+
+2. **Medication Adherence for Cholesterol (ADH-Statins)**
+   - Performance Rate: **100.0%**
+   - Eligible Population: 21
+   - Met Criteria: 21
+   - Gap to Close: 0 patients
+
+3. **Medication Adherence for Diabetes Medications (ADH-Diabetes)**
+   - Performance Rate: **100.0%**
+   - Eligible Population: 28
+   - Met Criteria: 28
+   - Gap to Close: 0 patients
+
+---
+
+#### **🔴 Measures Needing Improvement (<50% Performance Rate)**
+
+4. **Statin Use in Persons with Diabetes (SUPD)**
+   - Performance Rate: **43.5%**
+   - Eligible Population: 26
+   - Met Criteria: 10
+   - Gap to Close: 13 patients (56.5%)
+
+5. **Documentation of Current Medications in Medical Record (CQM130)**
+   - Performance Rate: **34.7%**
+   - Eligible Population: 869
+   - Met Criteria: 302
+   - Gap to Close: 566 patients (65.2%)
+
+6. **Statin Therapy for Prevention/Treatment of CVD (CQM438)**
+   - Performance Rate: **29.6%**
+   - Eligible Population: 663
+   - Met Criteria: 190
+   - Gap to Close: 411 patients (68.4%)
+
+7. **Pain Assessment and Follow-Up (NQF0420)**
+   - Performance Rate: **5.7%**
+   - Eligible Population: 869
+   - Met Criteria: 49
+   - Gap to Close: 818 patients (94.4%)
+
+---
+
+### **Performance by Measure Type**
+
+| Measure Type | # of Measures | Avg Performance | Total Eligible | Overall Rate |
+|-------------|---------------|----------------|----------------|-------------|
+| **Medication Adherence** | 3 | 100.0% | 75 | 102.7%* |
+| **Clinical Quality Measure** | 2 | 32.2% | 1,532 | 33.5% |
+| **NQF Quality Measure** | 1 | 5.7% | 869 | 5.7% |
+| **Other (SUPD)** | 1 | 43.5% | 26 | 43.5% |
+
+*Note: Some adjusted rates exceed 100% due to exclusions being handled differently in the calculation.
+
+---
+
+### **Key Insights & Recommendations**
+
+1. **Strengths:**
+   - All **medication adherence measures** achieved perfect 100% performance rates
+   - Strong pharmacy management and patient compliance programs
+
+2. **Priority Improvement Areas:**
+   - **Pain Assessment (NQF0420)**: Only 5.7% compliance - urgent need for process improvement
+   - **Medication Documentation (CQM130)**: 34.7% - implement EHR documentation protocols
+   - **Statin Therapy (CQM438)**: 29.6% - opportunity to improve cardiovascular disease prevention
+
+3. **Potential Impact:**
+   - Closing the gap on the 4 underperforming measures could positively impact **2,427 patients**
+   - The largest opportunity is in pain assessment and follow-up documentation
+
+Would you like me to provide more detailed analysis on any specific measure or recommendations for improvement strategies?",59.496
+"What is the distribution of chronic conditions? I want a breakdown of how many patients have 0 chronic conditions, how many patients have 1 chronic condition, how many patients have 2 chronic conditions, etc.",benchmarks/evals/tuva_project_demo/golden_query/distribution_of_chronic_conditions.sql,"""[""""chronic_conditions.tuva_chronic_conditions_long"""",""""core.patient""""]""",claude-sonnet-4-5-20250929,msg_01JQ8WZgL6SGzQBXKLfnHSp7,get_database_schema; get_table_info; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""chronic_conditions.tuva_chronic_conditions_wide""}; execute_query: {""sql_query"": ""\nWITH patient_condition_counts AS (\n  SELECT \n    person_id,\n    (COALESCE(obesity, 0) + COALESCE(osteoarthritis, 0) + COALESCE(copd, 0) + COALESCE(anxiety_disorders, 0) + \n     COALESCE(ckd, 0) + COALESCE(t2d, 0) + COALESCE(cll, 0) + COALESCE(dysplipidemias, 0) + \n     COALESCE(hypertension, 0) + COALESCE(atherosclerosis, 0) + COALESCE(dementia, 0) + COALESCE(rheumatoid_arthritis, 0) + \n     COALESCE(celiac, 0) + COALESCE(hip_fracture, 0) + COALESCE(immunodeficiencies_and_white_blood_cell_disorders, 0) + \n     COALESCE(asthma, 0) + COALESCE(t1d, 0) + COALESCE(ulcerative_colitis, 0) + COALESCE(chrohns, 0) + \n     COALESCE(holicobacter, 0) + COALESCE(bipolar, 0) + COALESCE(heart_failure, 0) + COALESCE(tabacco, 0) + \n     COALESCE(lyme, 0) + COALESCE(breast_cancer, 0) + COALESCE(osteoporosis, 0) + COALESCE(pulmonary_embolism, 0) + \n     COALESCE(schizophrenia, 0) + COALESCE(atrial_fibrillation, 0) + COALESCE(colorectal_cancer, 0) + \n     COALESCE(depression, 0) + COALESCE(deep_vein_thrombosis, 0) + COALESCE(alzheimer, 0) + COALESCE(stroke, 0) + \n     COALESCE(myocardial_infraction, 0) + COALESCE(opiod_use_disorder, 0) + COALESCE(lung_cancer, 0) + \n     COALESCE(herpes, 0) + COALESCE(rickettsiosis, 0) + COALESCE(ms, 0) + COALESCE(alchohol, 0) + \n     COALESCE(adhd, 0) + COALESCE(hiv, 0) + COALESCE(ptsd, 0) + COALESCE(lupus, 0)) AS total_chronic_conditions\n  FROM chronic_conditions.tuva_chronic_conditions_wide\n)\nSELECT \n  total_chronic_conditions AS number_of_chronic_conditions,\n  COUNT(*) AS patient_count,\n  ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percentage\nFROM patient_condition_counts\nGROUP BY total_chronic_conditions\nORDER BY total_chronic_conditions\n""}","Excellent! I've successfully generated the distribution of chronic conditions among patients. Here's a summary of the findings:
+
+## Distribution of Chronic Conditions
+
+The analysis shows the breakdown of patients by the number of chronic conditions they have:
+
+**Key Insights:**
+
+1. **Total Patients Analyzed:** 927 patients
+
+2. **Distribution Highlights:**
+   - **0 conditions:** 9 patients (0.97%) - Very small proportion with no chronic conditions
+   - **1 condition:** 27 patients (2.91%)
+   - **2 conditions:** 40 patients (4.31%)
+   - **3 conditions:** 50 patients (5.39%)
+   - **4 conditions:** 64 patients (6.90%)
+   - **5 conditions:** 65 patients (7.01%)
+   - **6 conditions:** 75 patients (8.09%)
+   - **7 conditions:** 83 patients (8.95%) - **Highest frequency**
+   - **8 conditions:** 77 patients (8.31%)
+   - **9 conditions:** 70 patients (7.55%)
+   - **10 conditions:** 79 patients (8.52%)
+   - **11-16 conditions:** Ranges from 27-58 patients each
+   - **17-21 conditions:** Small numbers (2-11 patients each)
+
+3. **Central Tendency:**
+   - The distribution appears to be relatively centered around **7-10 chronic conditions** per patient
+   - Very few patients (only 0.97%) have no chronic conditions
+   - The vast majority (over 96%) have at least one chronic condition
+
+4. **Range:**
+   - The minimum is 0 conditions
+   - The maximum is 21 conditions
+   - This shows significant variation in chronic disease burden across the patient population
+
+This distribution suggests a population with substantial chronic disease burden, which has important implications for care management and resource allocation.",31.538
+What is the total medicaid spend broken down by member months?,benchmarks/evals/tuva_project_demo/golden_query/medicaid_spend_by_member_months.sql,financial_pmpm.pmpm_prep,claude-sonnet-4-5-20250929,msg_01VAUwFEPqWvBY5VtceFoksT,get_database_schema; get_table_info; get_table_info; execute_query; execute_query; execute_query; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""core.member_months""}; get_table_info: {""table_name"": ""financial_pmpm.pmpm_prep""}; execute_query: {""sql_query"": ""\nSELECT DISTINCT payer \nFROM core.member_months \nORDER BY payer\n""}; execute_query: {""sql_query"": ""\nSELECT \n    mm.payer,\n    COUNT(DISTINCT mm.member_month_key) as member_months,\n    SUM(COALESCE(pm.total_paid, 0)) as total_spend,\n    ROUND(SUM(COALESCE(pm.total_paid, 0)) / NULLIF(COUNT(DISTINCT mm.member_month_key), 0), 2) as spend_per_member_month\nFROM core.member_months mm\nLEFT JOIN financial_pmpm.pmpm_prep pm \n    ON mm.person_id = pm.person_id \n    AND mm.year_month = pm.year_month\n    AND mm.payer = pm.payer\nWHERE LOWER(mm.payer) LIKE '%medicaid%'\nGROUP BY mm.payer\nORDER BY total_spend DESC\n""}; execute_query: {""sql_query"": ""\nSELECT \n    mm.payer,\n    COUNT(*) as member_months,\n    SUM(COALESCE(pm.total_paid, 0)) as total_spend,\n    ROUND(SUM(COALESCE(pm.total_paid, 0)) / NULLIF(COUNT(*), 0), 2) as spend_per_member_month\nFROM core.member_months mm\nLEFT JOIN financial_pmpm.pmpm_prep pm \n    ON mm.person_id = pm.person_id \n    AND mm.year_month = pm.year_month\n    AND mm.payer = pm.payer\nWHERE LOWER(mm.payer) LIKE '%medicaid%'\nGROUP BY mm.payer\nORDER BY total_spend DESC\n""}; execute_query: {""sql_query"": ""\nSELECT \n    mm.payer,\n    COUNT(*) as member_months,\n    ROUND(SUM(COALESCE(pm.total_paid, 0)), 2) as total_spend,\n    ROUND(SUM(COALESCE(pm.total_paid, 0)) / NULLIF(COUNT(*), 0), 2) as spend_per_member_month\nFROM core.member_months mm\nLEFT JOIN financial_pmpm.pmpm_prep pm \n    ON mm.person_id = pm.person_id \n    AND mm.year_month = pm.year_month\n    AND mm.payer = pm.payer\nGROUP BY mm.payer\nORDER BY total_spend DESC\n""}","## Summary
+
+Based on my analysis of the database:
+
+**Finding:** The database **does not contain any Medicaid data**. It only contains Medicare claims data.
+
+**What I found instead:**
+- **Payer:** Medicare (only payer in the database)
+- **Total Member Months:** 31,184
+- **Total Spend:** $13,424,868.23
+- **Spend Per Member Month:** $430.51
+
+**For Medicaid analysis (when data is available):**
+The query structure would be:
+
+```sql
+SELECT 
+    mm.payer,
+    COUNT(*) as member_months,
+    ROUND(SUM(COALESCE(pm.total_paid, 0)), 2) as total_spend,
+    ROUND(SUM(COALESCE(pm.total_paid, 0)) / NULLIF(COUNT(*), 0), 2) as spend_per_member_month
+FROM core.member_months mm
+LEFT JOIN financial_pmpm.pmpm_prep pm 
+    ON mm.person_id = pm.person_id 
+    AND mm.year_month = pm.year_month
+    AND mm.payer = pm.payer
+WHERE LOWER(mm.payer) = 'medicaid'
+GROUP BY mm.payer
+```
+
+**Note:** If you need Medicaid-specific analysis, you would need to load Medicaid claims data into this database first.",43.828
+"For quality measures, can you give me a breakdown of exclusion reasons and the count by measure?",benchmarks/evals/tuva_project_demo/golden_query/exclusion_reason_breakdown.sql,quality_measures.summary_long,claude-sonnet-4-5-20250929,msg_017JmkFVc7RCyVVZqHZkN4ww,get_database_schema; get_table_info; get_table_info; execute_query; execute_query; execute_query; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""ahrq_measures.pqi_exclusion_long""}; get_table_info: {""table_name"": ""quality_measures.summary_long""}; execute_query: {""sql_query"": ""\n-- PQI Measures Exclusion Breakdown\nSELECT \n    'PQI-' || pqi_number AS measure_id,\n    exclusion_reason,\n    COUNT(*) AS exclusion_count,\n    COUNT(DISTINCT encounter_id) AS unique_encounters\nFROM ahrq_measures.pqi_exclusion_long\nGROUP BY pqi_number, exclusion_reason\nORDER BY pqi_number, exclusion_count DESC\n""}; execute_query: {""sql_query"": ""\n-- Quality Measures Exclusion Breakdown\nSELECT \n    measure_id,\n    measure_name,\n    exclusion_reason,\n    COUNT(*) AS exclusion_count,\n    COUNT(DISTINCT person_id) AS unique_persons\nFROM quality_measures.summary_long\nWHERE exclusion_flag = 1\n  AND exclusion_reason IS NOT NULL\nGROUP BY measure_id, measure_name, exclusion_reason\nORDER BY measure_id, exclusion_count DESC\n""}; execute_query: {""sql_query"": ""\n-- Combined Summary of All Quality Measure Exclusions\nWITH pqi_exclusions AS (\n    SELECT \n        'PQI-' || pqi_number AS measure_id,\n        'PQI-' || pqi_number AS measure_name,\n        exclusion_reason,\n        COUNT(*) AS exclusion_count\n    FROM ahrq_measures.pqi_exclusion_long\n    GROUP BY pqi_number, exclusion_reason\n),\nquality_exclusions AS (\n    SELECT \n        measure_id,\n        measure_name,\n        exclusion_reason,\n        COUNT(*) AS exclusion_count\n    FROM quality_measures.summary_long\n    WHERE exclusion_flag = 1\n      AND exclusion_reason IS NOT NULL\n    GROUP BY measure_id, measure_name, exclusion_reason\n),\ncombined AS (\n    SELECT * FROM pqi_exclusions\n    UNION ALL\n    SELECT * FROM quality_exclusions\n)\nSELECT \n    measure_id,\n    measure_name,\n    exclusion_reason,\n    exclusion_count\nFROM combined\nORDER BY measure_id, exclusion_count DESC\n""}; execute_query: {""sql_query"": ""\n-- Summary by Measure with Total Exclusions\nWITH pqi_exclusions AS (\n    SELECT \n        'PQI-' || pqi_number AS measure_id,\n        exclusion_reason,\n        COUNT(*) AS exclusion_count\n    FROM ahrq_measures.pqi_exclusion_long\n    GROUP BY pqi_number, exclusion_reason\n),\nquality_exclusions AS (\n    SELECT \n        measure_id,\n        exclusion_reason,\n        COUNT(*) AS exclusion_count\n    FROM quality_measures.summary_long\n    WHERE exclusion_flag = 1\n      AND exclusion_reason IS NOT NULL\n    GROUP BY measure_id, exclusion_reason\n),\ncombined AS (\n    SELECT * FROM pqi_exclusions\n    UNION ALL\n    SELECT * FROM quality_exclusions\n)\nSELECT \n    measure_id,\n    COUNT(DISTINCT exclusion_reason) AS total_exclusion_types,\n    SUM(exclusion_count) AS total_exclusions\nFROM combined\nGROUP BY measure_id\nORDER BY total_exclusions DESC, measure_id\n""}","Perfect! Now I have all the information needed to provide a comprehensive breakdown. Here's the complete analysis:
+
+## Quality Measures Exclusion Breakdown by Measure
+
+I've analyzed the exclusions across both PQI (Prevention Quality Indicators) and standard quality measures. Here's the breakdown:
+
+### **Summary by Measure**
+
+| Measure | Total Exclusion Types | Total Exclusions |
+|---------|----------------------|------------------|
+| **PQI Measures (All)** | 2 each | 250 each |
+| - PQI-1, PQI-3, PQI-5, PQI-7, PQI-8, PQI-11, PQI-12, PQI-14, PQI-15, PQI-16 |
+| **CQM438** (Statin Therapy for CVD) | 8 | 62 |
+| **SUPD** (Statin Use in Diabetes) | 1 | 3 |
+| **NQF0420** (Pain Assessment) | 1 | 2 |
+| **ADH-Diabetes** | 1 | 1 |
+| **ADH-Statins** | 1 | 1 |
+| **CQM130** (Medication Documentation) | 1 | 1 |
+
+---
+
+### **Detailed Exclusion Reasons by Measure**
+
+#### **PQI Measures (PQI-1, 3, 5, 7, 8, 11, 12, 14, 15, 16)**
+Each PQI measure has identical exclusion patterns:
+- **Missing Primary Diagnosis**: 227 encounters
+- **Transfer**: 23 encounters
+
+#### **CQM438 - Statin Therapy for Prevention of Cardiovascular Disease**
+- **Liver Disease**: 28 patients
+- **Statin Associated Muscle Symptoms**: 17 patients
+- **Rhabdomyolysis**: 6 patients
+- **Palliative Care Diagnosis**: 4 patients
+- **Hepatitis B**: 4 patients
+- **End Stage Renal Disease**: 1 patient
+- **Hepatitis A**: 1 patient
+- **Medical Reason**: 1 patient
+
+#### **Other Quality Measures**
+- **SUPD** (Statin Use in Persons with Diabetes): PQA Prediabetes (3 patients)
+- **NQF0420** (Pain Assessment): Patient not eligible for pain assessment (2 patients)
+- **ADH-Diabetes**: PQA ESRD (1 patient)
+- **ADH-Statins**: PQA ESRD (1 patient)
+- **CQM130**: Medical Reason (1 patient)
+
+---
+
+### **Key Insights**
+
+1. **PQI measures** dominate exclusions with 2,500 total exclusions (250 per measure × 10 measures)
+2. **Data quality issues** are the primary driver for PQI exclusions (missing primary diagnosis)
+3. **CQM438** has the most diverse exclusion criteria (8 different types) among non-PQI measures
+4. **Clinical contraindications** (liver disease, muscle symptoms, rhabdomyolysis) are the main exclusions for statin-related measures",43.824
+What is the 30-day readmission rate by MS-DRG? Give me the MS-DRG description as well,benchmarks/evals/tuva_project_demo/golden_query/readmission_rate_by_ms_drg.sql,"""[""""readmissions.readmission_summary"""",""""terminology.ms_drg""""]""",claude-sonnet-4-5-20250929,msg_01AzxGmSb5DCTws8vkPKRU6z,get_database_schema; get_table_info; get_table_info; get_table_info; execute_query; execute_query,"get_database_schema: {}; get_table_info: {""table_name"": ""readmissions.readmission_summary""}; get_table_info: {""table_name"": ""readmissions.encounter_augmented""}; get_table_info: {""table_name"": ""terminology.ms_drg""}; execute_query: {""sql_query"": ""\nSELECT \n    rs.drg_code AS ms_drg_code,\n    md.ms_drg_description,\n    COUNT(DISTINCT rs.encounter_id) AS total_index_admissions,\n    SUM(rs.readmit_30_flag) AS readmissions_30_day,\n    ROUND(100.0 * SUM(rs.readmit_30_flag) / COUNT(DISTINCT rs.encounter_id), 2) AS readmission_rate_30_day_pct\nFROM readmissions.readmission_summary rs\nLEFT JOIN terminology.ms_drg md \n    ON rs.drg_code = md.ms_drg_code\nWHERE rs.index_admission_flag = 1\n    AND rs.drg_code_type = 'ms-drg'\n    AND rs.drg_code IS NOT NULL\nGROUP BY rs.drg_code, md.ms_drg_description\nHAVING COUNT(DISTINCT rs.encounter_id) >= 5\nORDER BY readmission_rate_30_day_pct DESC, total_index_admissions DESC\n""}; execute_query: {""sql_query"": ""\nSELECT \n    COUNT(DISTINCT CASE WHEN index_admission_flag = 1 AND drg_code_type = 'ms-drg' THEN encounter_id END) AS total_index_admissions,\n    SUM(CASE WHEN index_admission_flag = 1 AND drg_code_type = 'ms-drg' THEN readmit_30_flag ELSE 0 END) AS total_30_day_readmissions,\n    ROUND(100.0 * SUM(CASE WHEN index_admission_flag = 1 AND drg_code_type = 'ms-drg' THEN readmit_30_flag ELSE 0 END) / \n        COUNT(DISTINCT CASE WHEN index_admission_flag = 1 AND drg_code_type = 'ms-drg' THEN encounter_id END), 2) AS overall_readmission_rate_pct,\n    COUNT(DISTINCT CASE WHEN index_admission_flag = 1 AND drg_code_type = 'ms-drg' AND drg_code IS NOT NULL THEN drg_code END) AS unique_ms_drg_codes\nFROM readmissions.readmission_summary\n""}","## 30-Day Readmission Rate by MS-DRG
+
+### Overall Summary
+- **Total Index Admissions:** 187
+- **Total 30-Day Readmissions:** 10
+- **Overall Readmission Rate:** 5.35%
+- **Unique MS-DRG Codes:** 86
+
+### Readmission Rates by MS-DRG
+(Showing MS-DRGs with at least 5 index admissions)
+
+| MS-DRG Code | MS-DRG Description | Total Index Admissions | 30-Day Readmissions | Readmission Rate |
+|-------------|-------------------|------------------------|---------------------|------------------|
+| **871** | Septicemia or Severe Sepsis without MV >96 Hours with MCC | 5 | 2 | **40.00%** |
+| **190** | Chronic Obstructive Pulmonary Disease with MCC | 5 | 1 | **20.00%** |
+| **392** | Esophagitis, Gastroenteritis and Miscellaneous Digestive Disorders without MCC | 6 | 1 | **16.67%** |
+| **689** | Kidney and Urinary Tract Infections with MCC | 6 | 1 | **16.67%** |
+| **470** | Major Hip and Knee Joint Replacement or Reattachment of Lower Extremity without MCC | 8 | 0 | **0.00%** |
+| **641** | Miscellaneous Disorders of Nutrition, Metabolism, Fluids and Electrolytes without MCC | 7 | 0 | **0.00%** |
+| **247** | Percutaneous cardiovascular procedures with drug-eluting stent without MCC | 6 | 0 | **0.00%** |
+| **310** | Cardiac Arrhythmia and Conduction Disorders without CC/MCC | 6 | 0 | **0.00%** |
+| **312** | Syncope and Collapse | 6 | 0 | **0.00%** |
+| **281** | Acute Myocardial Infarction, Discharged Alive with CC | 6 | 0 | **0.00%** |
+
+### Key Insights
+1. **Highest Readmission Rate:** MS-DRG 871 (Septicemia/Severe Sepsis with MCC) has the highest readmission rate at 40%
+2. **Second Highest:** MS-DRG 190 (COPD with MCC) at 20%
+3. **Elective Procedures:** Planned procedures like hip/knee replacements (MS-DRG 470) show 0% readmission rate
+4. **Infection-Related:** Both sepsis and urinary tract infections show elevated readmission rates
+5. **Cardiovascular Conditions:** Most cardiovascular-related MS-DRGs show 0% readmission rates in this dataset
+
+Note: The analysis is filtered to show only MS-DRGs with at least 5 index admissions to ensure statistical relevance.",37.993
