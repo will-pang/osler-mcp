@@ -74,35 +74,14 @@ def csv_to_benchmark_queries(csv_path: str) -> list[BenchmarkQueries]:
 #     return output_path
 
 
-# TODO: Make the csv fields a class/schema
 def init_streaming_csv(csv_path: str, output_path: str):
-    """
-    Initialize CSV for streaming writes. Returns original rows and fieldnames.
-
-    Args:
-        csv_path: Path to the original CSV file
-        output_path: Path to the output CSV file
-
-    Returns:
-        tuple: (original_rows, output_fieldnames)
-    """
-    # Read original CSV
     with open(csv_path, "r", encoding="utf-8") as infile:
         reader = csv.DictReader(infile)
         original_fieldnames = list(reader.fieldnames)
         original_rows = list(reader)
 
-    # Define output fieldnames
-    output_fieldnames = original_fieldnames + [
-        "model",
-        "session_id",
-        "tool_calls",
-        "tool_arguments",
-        "response_text",
-        "total_runtime_s",
-    ]
+    output_fieldnames = original_fieldnames + ModelResponse.CSV_FIELDS
 
-    # Initialize output CSV with headers
     with open(output_path, "w", encoding="utf-8", newline="") as outfile:
         writer = csv.DictWriter(outfile, fieldnames=output_fieldnames)
         writer.writeheader()
@@ -111,24 +90,17 @@ def init_streaming_csv(csv_path: str, output_path: str):
 
 
 def append_response_to_csv(
-    response: ModelResponse, original_row: dict, output_path: str, fieldnames: list[str]
+    response: ModelResponse,
+    original_row: dict,
+    output_path: str,
+    fieldnames: list[str],
 ):
-    """
-    Append a single model response to the CSV file.
-
-    Args:
-        response: ModelResponse object
-        original_row: Original row from the input CSV
-        output_path: Path to the output CSV file
-        fieldnames: List of fieldnames for the CSV
-    """
     with open(output_path, "a", encoding="utf-8", newline="") as outfile:
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
-        row = original_row.copy()
-        row["model"] = response.model
-        row["session_id"] = response.session_id
-        row["tool_calls"] = response.tool_names
-        row["tool_arguments"] = response.tool_arguments
-        row["response_text"] = response.response_text
-        row["total_runtime_s"] = response.total_runtime_ms / 1000
+
+        row = {
+            **original_row,
+            **response.to_csv_row(),
+        }
+
         writer.writerow(row)
