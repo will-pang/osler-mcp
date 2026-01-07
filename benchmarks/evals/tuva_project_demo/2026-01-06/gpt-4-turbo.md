@@ -9,7 +9,7 @@
 | Pass or Fail Response          | F     |
 | Percent Correct Tables Queried | 0.5   |
 | Number of Tools Invoked        | 3     |
-| Getting there? (Y/N)           | Y     |
+| Partial Credit? (Y/N)          | Y     |
 
 **Query:** What is the count of ED visits by CCSR Category and Body System?
 
@@ -18,7 +18,7 @@
 | Pass or Fail Response          | F     |
 | Percent Correct Tables Queried | 0.5   |
 | Number of Tools Invoked        | 3     |
-| Getting there? (Y/N)           | Y     |
+| Partial Credit? (Y/N)          | Y     |
 
 **Query:** What is the average CMS-HCC Risk Score by Patient Location?
 
