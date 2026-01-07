@@ -107,7 +107,7 @@ class BaseAsyncClaudeAdapter:
             # Extract final response text
             text_blocks = [block.text for block in response.content if hasattr(block, "text")]
             response_text = " ".join(text_blocks)
-            total_latency = int((time.perf_counter() - start_time) * 1000)
+            total_runtime = int((time.perf_counter() - start_time) * 1000)
 
             return ModelResponse(
                 model=self.model,
@@ -115,7 +115,7 @@ class BaseAsyncClaudeAdapter:
                 query=prompt,
                 response_text=response_text,
                 tool_calls=tool_calls,
-                total_latency_ms=total_latency,
+                total_runtime_ms=total_runtime,
                 error=None,
             )
 
