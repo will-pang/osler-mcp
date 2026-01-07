@@ -1,6 +1,6 @@
 import json
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, ClassVar, Dict, Optional
 
 
 @dataclass
@@ -38,17 +38,36 @@ class ModelResponse:
     total_runtime_ms: int
     error: str | None = None
 
+    CSV_FIELDS: ClassVar[list[str]] = [
+        "model",
+        "session_id",
+        "tool_calls",
+        "tool_arguments",
+        "response_text",
+        "total_runtime_s",
+    ]
+
     @property
     def tool_names(self) -> str:
-        return "; ".join([f"{tc.tool_name}" for tc in self.tool_calls]) if self.tool_calls else ""
+        return "; ".join(tc.tool_name for tc in self.tool_calls) if self.tool_calls else ""
 
     @property
     def tool_arguments(self) -> str:
         return (
-            "; ".join([f"{tc.tool_name}: {json.dumps(tc.arguments)}" for tc in self.tool_calls])
+            "; ".join(f"{tc.tool_name}: {json.dumps(tc.arguments)}" for tc in self.tool_calls)
             if self.tool_calls
             else ""
         )
+
+    def to_csv_row(self) -> dict:
+        return {
+            "model": self.model,
+            "session_id": self.session_id,
+            "tool_calls": self.tool_names,
+            "tool_arguments": self.tool_arguments,
+            "response_text": self.response_text,
+            "total_runtime_s": self.total_runtime_ms / 1000,
+        }
 
 
 @dataclass
