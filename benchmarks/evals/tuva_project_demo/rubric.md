@@ -1,6 +1,6 @@
 # Evaluation Rubric
 
-## qwen2.5:7b-ctx32k
+## [Model Name]
 
 **Query:**
 

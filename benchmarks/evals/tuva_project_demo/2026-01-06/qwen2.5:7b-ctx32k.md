@@ -19,3 +19,66 @@
 | Percent Correct Tables Queried | 0     |
 | Number of Tools Invoked        | 2     |
 | Partial Credit? (Y/N)          | N     |
+
+**Query:** What is the average CMS-HCC Risk Score by Patient Location?
+
+| Criterion                      | Score |
+| ------------------------------ | ----- |
+| Pass or Fail Response          | F     |
+| Percent Correct Tables Queried | 0.5   |
+| Number of Tools Invoked        | 3     |
+| Partial Credit? (Y/N)          | N     |
+
+**Query:** What is the overall readmission rate?
+
+| Criterion                      | Score |
+| ------------------------------ | ----- |
+| Pass or Fail Response          | F     |
+| Percent Correct Tables Queried | 1     |
+| Number of Tools Invoked        | 3     |
+| Partial Credit? (Y/N)          | Y     |
+
+**Query:** What is the healthcare quality measure performance? Provide a breakdown by performance rate
+
+| Criterion                      | Score |
+| ------------------------------ | ----- |
+| Pass or Fail Response          | F     |
+| Percent Correct Tables Queried | 0     |
+| Number of Tools Invoked        | 2     |
+| Partial Credit? (Y/N)          | N     |
+
+**Query:** What is the distribution of chronic conditions? I want a breakdown of how many patients have 0 chronic conditions, how many patients have 1 chronic condition, how many patients have 2 chronic conditions, etc.
+
+| Criterion                      | Score |
+| ------------------------------ | ----- |
+| Pass or Fail Response          | F     |
+| Percent Correct Tables Queried | 0.5   |
+| Number of Tools Invoked        | 5     |
+| Partial Credit? (Y/N)          | N     |
+
+**Query:** What is the total medicaid spend broken down by member months?
+
+| Criterion                      | Score |
+| ------------------------------ | ----- |
+| Pass or Fail Response          | F     |
+| Percent Correct Tables Queried | 0     |
+| Number of Tools Invoked        | 4     |
+| Partial Credit? (Y/N)          | N     |
+
+**Query:** For quality measures, can you give me a breakdown of exclusion reasons and the count by measure?
+
+| Criterion                      | Score |
+| ------------------------------ | ----- |
+| Pass or Fail Response          | F     |
+| Percent Correct Tables Queried | 0     |
+| Number of Tools Invoked        | 3     |
+| Partial Credit? (Y/N)          | N     |
+
+**Query:** What is the 30-day readmission rate by MS-DRG? Give me the MS-DRG description as well
+
+| Criterion                      | Score |
+| ------------------------------ | ----- |
+| Pass or Fail Response          | F     |
+| Percent Correct Tables Queried | 0     |
+| Number of Tools Invoked        | 6     |
+| Partial Credit? (Y/N)          | N     |
