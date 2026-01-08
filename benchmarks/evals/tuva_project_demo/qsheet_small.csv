@@ -1,3 +1,0 @@
-Query,Golden Query Relative Path,Golden Table
-What is the 30-day readmission rate by MS-DRG?,benchmarks/evals/tuva_project_demo/golden_query/readmission_rate_by_ms_drg.sql,"""[""""readmissions.readmission_summary"""",""""terminology.ms_drg""""]"""
-What is the total medicaid spend broken down by member months? Give me the MS-DRG description as well,benchmarks/evals/tuva_project_demo/golden_query/medicaid_spend_by_member_months.sql,financial_pmpm.pmpm_prep
