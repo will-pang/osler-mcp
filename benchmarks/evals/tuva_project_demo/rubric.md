@@ -4,18 +4,16 @@
 
 **Query:**
 
-| Criterion                      | Score |
-| ------------------------------ | ----- |
-| Pass or Fail Response          |       |
-| Percent Correct Tables Queried |       |
-| Number of Tools Invoked        |       |
-| Partial Credit? (Y/N)          |       |
+| Criterion               | Score |
+| ----------------------- | ----- |
+| Pass or Fail Response   |       |
+| Number of Tools Invoked |       |
+| Partial Credit? (Y/N)   |       |
 
 **Query:**
 
-| Criterion                      | Score |
-| ------------------------------ | ----- |
-| Pass or Fail Response          |       |
-| Percent Correct Tables Queried |       |
-| Number of Tools Invoked        |       |
-| Partial Credit? (Y/N)          |       |
+| Criterion               | Score |
+| ----------------------- | ----- |
+| Pass or Fail Response   |       |
+| Number of Tools Invoked |       |
+| Partial Credit? (Y/N)   |       |
