@@ -33,7 +33,7 @@ def csv_to_benchmark_queries(csv_path: str) -> list[BenchmarkQueries]:
     return queries
 
 
-def init_streaming_csv(csv_path: str, output_path: str):
+def initialize_response_to_csv(csv_path: str, output_path: str):
     with open(csv_path, "r", encoding="utf-8") as infile:
         reader = csv.DictReader(infile)
         original_fieldnames = list(reader.fieldnames)

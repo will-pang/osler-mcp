@@ -1,16 +1,21 @@
 import asyncio
 
-from benchmarks.models.qwen_adapters import AsyncQwenAdapter
-from benchmarks.utils import csv_to_benchmark_queries, get_mcp_tools, model_response_to_csv
+from benchmarks.models.openai_adapters import AsyncOpenAIOSSAdapter
+from benchmarks.utils import (
+    append_response_to_csv,
+    csv_to_benchmark_queries,
+    get_mcp_tools,
+    initialize_response_to_csv,
+)
 from src.osler.config import get_project_root
 
 EVAL_FILE_PATH = "benchmarks/evals/tuva_project_demo/"
 OUTPUT_FOLDER = "2026-01-06"
 
-# MODEL_NAME = "gpt-oss-20b-ctx32k:latest"
+MODEL_NAME = "gpt-oss-20b-ctx32k:latest"
 # MODEL_NAME = "gpt-4-turbo"
 # MODEL_NAME = "claude-sonnet-4-5-20250929"
-MODEL_NAME = "qwen2.5:7b-ctx32k"
+# MODEL_NAME = "qwen2.5:7b-ctx32k"
 
 
 async def main():
@@ -29,22 +34,27 @@ async def main():
 
     # Step 4: Choose Model
     # adapter = AsyncOpenAIAdapter(model=MODEL_NAME)
-    # adapter = AsyncOpenAIOSSAdapter(model=MODEL_NAME)
+    adapter = AsyncOpenAIOSSAdapter(model=MODEL_NAME)
     # adapter = AsyncClaudeAdapter(model=MODEL_NAME)
-    adapter = AsyncQwenAdapter(model=MODEL_NAME)
+    # adapter = AsyncQwenAdapter(model=MODEL_NAME)
 
-    # Step 5: Iterate over each benchmark query and collect responses
-    responses = []
-    for idx, benchmark_query in enumerate(benchmark_queries, start=1):
+    # Step 5: Initialize streaming CSV and iterate over queries
+    original_rows, fieldnames = initialize_response_to_csv(csv_path, output_path)
+
+    for idx, (benchmark_query, original_row) in enumerate(
+        zip(benchmark_queries, original_rows), start=1
+    ):
         # Inject tool policy into the prompt
         full_prompt = f"{tool_policy}\n\n{benchmark_query.query}"
-        print(f"Printing full prompt: {full_prompt}")
+        print(f"Processing query {idx}/{len(benchmark_queries)}")
+        print(f"Full prompt: {full_prompt}")
+
         response = await adapter.run(prompt=full_prompt, tools=all_tools)
 
-        responses.append(response)
+        # Write response to CSV immediately after receiving it
+        append_response_to_csv(response, original_row, output_path, fieldnames)
 
-    # Step 5: Save responses to CSV
-    model_response_to_csv(responses, csv_path, output_path)
+    print(f"All results saved to: {output_path}")
 
 
 if __name__ == "__main__":
