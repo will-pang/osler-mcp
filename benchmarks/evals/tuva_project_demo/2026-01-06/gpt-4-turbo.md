@@ -73,19 +73,3 @@
 | Pass or Fail Response   | P     |
 | Number of Tools Invoked | 4     |
 | Partial Credit? (Y/N)   | --    |
-
-**Query:**
-
-| Criterion               | Score |
-| ----------------------- | ----- |
-| Pass or Fail Response   |       |
-| Number of Tools Invoked |       |
-| Partial Credit? (Y/N)   |       |
-
-**Query:**
-
-| Criterion               | Score |
-| ----------------------- | ----- |
-| Pass or Fail Response   |       |
-| Number of Tools Invoked |       |
-| Partial Credit? (Y/N)   |       |
