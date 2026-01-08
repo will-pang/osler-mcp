@@ -1,6 +1,0 @@
-Query,Golden Query Relative Path
-What is the prevalence of Tuva Chronic Conditions?,benchmarks/evals/tuva_project_demo/golden_query/prevalence_tuva_chronic_conditions.sql
-What is the count of ED visits by CCSR Category and Body System?,benchmarks/evals/tuva_project_demo/golden_query/count_of_ed_visits_by_ccsr.sql
-What is the average CMS-HCC Risk Score by Patient Location?,benchmarks/evals/tuva_project_demo/golden_query/average_cms_hcc_risk_scores_by_patient_location.sql
-What is the overall readmission rate?,benchmarks/evals/tuva_project_demo/golden_query/overall_readmission_rate.sql
-What is the healthcare quality measure performance?,benchmarks/evals/tuva_project_demo/golden_query/quality_measures_performance.sql
