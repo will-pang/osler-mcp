@@ -54,9 +54,9 @@
 
 | Criterion               | Score |
 | ----------------------- | ----- |
-| Pass or Fail Response   | F     |
+| Pass or Fail Response   | P     |
 | Number of Tools Invoked | 6     |
-| Partial Credit? (Y/N)   | N     |
+| Partial Credit? (Y/N)   | --    |
 
 **Query:** For quality measures, can you give me a breakdown of exclusion reasons and the count by measure?
 
@@ -73,3 +73,19 @@
 | Pass or Fail Response   | P     |
 | Number of Tools Invoked | 4     |
 | Partial Credit? (Y/N)   | --    |
+
+**Query:**
+
+| Criterion               | Score |
+| ----------------------- | ----- |
+| Pass or Fail Response   |       |
+| Number of Tools Invoked |       |
+| Partial Credit? (Y/N)   |       |
+
+**Query:**
+
+| Criterion               | Score |
+| ----------------------- | ----- |
+| Pass or Fail Response   |       |
+| Number of Tools Invoked |       |
+| Partial Credit? (Y/N)   |       |
